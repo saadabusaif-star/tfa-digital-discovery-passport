@@ -1,28 +1,109 @@
 import { COOKIE_NAME } from "@shared/const";
+import { z } from "zod";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
-import { publicProcedure, router } from "./_core/trpc";
+import { adminProcedure, publicProcedure, router } from "./_core/trpc";
+import {
+  castVote,
+  completeActivity,
+  createCreativeSubmission,
+  createParticipant,
+  getLiveBoard,
+  getModerationQueue,
+  getPassport,
+  getStaffOverview,
+  listActivities,
+  moderateSubmission,
+  setParticipantVisibility,
+  updateActivityResource,
+} from "./db";
+import { storagePut } from "./storage";
+
+const passportCode = z.string().trim().regex(/^TFA-[A-Z0-9]{6}$/, "Enter a valid passport code.");
+const activitySlug = z.string().trim().min(2).max(64);
+const approvedMimeTypes = new Set(["image/png", "image/jpeg", "image/webp", "application/pdf"]);
+
+function decodeUpload(dataBase64: string, mimeType: string) {
+  if (!approvedMimeTypes.has(mimeType)) throw new Error("Please upload a PNG, JPEG, WebP image, or PDF only.");
+  const raw = dataBase64.includes(",") ? dataBase64.split(",").pop() ?? "" : dataBase64;
+  const buffer = Buffer.from(raw, "base64");
+  if (!buffer.length || buffer.byteLength > 4 * 1024 * 1024) throw new Error("Evidence files must be smaller than 4 MB.");
+  return buffer;
+}
+
+function safeFileName(fileName: string) {
+  const cleaned = fileName.replace(/[^a-zA-Z0-9._-]/g, "-").replace(/-+/g, "-").slice(0, 80);
+  return cleaned || "event-evidence";
+}
 
 export const appRouter = router({
-    // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
   system: systemRouter,
   auth: router({
     me: publicProcedure.query(opts => opts.ctx.user),
     logout: publicProcedure.mutation(({ ctx }) => {
       const cookieOptions = getSessionCookieOptions(ctx.req);
       ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });
-      return {
-        success: true,
-      } as const;
+      return { success: true } as const;
     }),
   }),
-
-  // TODO: add feature routers here, e.g.
-  // todo: router({
-  //   list: protectedProcedure.query(({ ctx }) =>
-  //     db.getUserTodos(ctx.user.id)
-  //   ),
-  // }),
+  event: router({
+    activities: publicProcedure.query(() => listActivities()),
+    join: publicProcedure.input(z.object({
+      displayName: z.string().trim().min(2, "Please enter at least 2 characters.").max(80),
+      gradeBand: z.enum(["6-7", "8-9", "10-12"]),
+    })).mutation(({ input }) => createParticipant(input)),
+    passport: publicProcedure.input(z.object({ accessCode: passportCode })).query(({ input }) => getPassport(input.accessCode)),
+    complete: publicProcedure.input(z.object({
+      accessCode: passportCode,
+      activitySlug,
+      responseText: z.string().trim().max(500).optional(),
+    })).mutation(({ input }) => completeActivity(input)),
+    submit: publicProcedure.input(z.object({
+      accessCode: passportCode,
+      activitySlug: activitySlug.optional(),
+      kind: z.enum(["pixel-art", "meme", "website-mockup", "reflection", "other"]),
+      body: z.string().trim().max(600).optional(),
+      upload: z.object({
+        dataBase64: z.string().min(12),
+        fileName: z.string().trim().min(1).max(160),
+        mimeType: z.string().trim().max(120),
+      }).optional(),
+    }).refine(input => Boolean(input.body || input.upload), { message: "Add a short response or an evidence file before submitting." })).mutation(async ({ input }) => {
+      let uploaded: { key: string; url: string } | undefined;
+      if (input.upload) {
+        const buffer = decodeUpload(input.upload.dataBase64, input.upload.mimeType);
+        uploaded = await storagePut(`event-evidence/${input.accessCode}/${safeFileName(input.upload.fileName)}`, buffer, input.upload.mimeType);
+      }
+      await createCreativeSubmission({
+        accessCode: input.accessCode,
+        activitySlug: input.activitySlug,
+        kind: input.kind,
+        body: input.body,
+        fileUrl: uploaded?.url,
+        storageKey: uploaded?.key,
+        fileName: input.upload?.fileName,
+        mimeType: input.upload?.mimeType,
+      });
+      return { success: true } as const;
+    }),
+    vote: publicProcedure.input(z.object({ accessCode: passportCode, optionText: z.string().trim().min(2).max(160) })).mutation(({ input }) => castVote(input)),
+    liveBoard: publicProcedure.query(() => getLiveBoard()),
+  }),
+  staff: router({
+    overview: adminProcedure.query(() => getStaffOverview()),
+    moderationQueue: adminProcedure.query(() => getModerationQueue()),
+    moderate: adminProcedure.input(z.object({
+      submissionId: z.number().int().positive(),
+      status: z.enum(["approved", "rejected"]),
+      adminNote: z.string().trim().max(300).optional(),
+    })).mutation(({ input, ctx }) => moderateSubmission({ ...input, reviewerId: ctx.user.id })),
+    updateResource: adminProcedure.input(z.object({
+      activityId: z.number().int().positive(),
+      resourceUrl: z.string().trim().url().max(512),
+      resourceLabel: z.string().trim().min(2).max(160),
+    })).mutation(({ input }) => updateActivityResource(input)),
+    setParticipantVisibility: adminProcedure.input(z.object({ participantId: z.number().int().positive(), isActive: z.boolean() })).mutation(({ input }) => setParticipantVisibility(input)),
+  }),
 });
 
 export type AppRouter = typeof appRouter;

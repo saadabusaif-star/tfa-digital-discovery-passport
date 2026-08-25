@@ -1,0 +1,23 @@
+# Project TODO
+
+- [x] Create a responsive school-event header with a country flag on the left and The First Academy School logo on the right.
+- [x] Build a polished landing page with an event introduction, free-flow participation guidance, and clear entry actions.
+- [x] Implement Play, Create, Discover, and Connect challenge zones without enforced completion order.
+- [x] Create tablet-friendly quiz, cyber-safety, code-breaking, QR-hunt, tech-timeline, reflection, and voting interactions.
+- [x] Create participant/team onboarding with display name and grade-band selection.
+- [x] Implement a persisted digital passport that records completions, badges, progress, and points.
+- [x] Create database tables and typed procedures for participants, activities, completions, submissions, votes, and live results.
+- [x] Add approved-image and file-evidence uploads for selected creative activities using managed file storage.
+- [x] Build a school-suitable pending-and-approved gallery for creative submissions and short responses.
+- [x] Build a staff-only moderation and event-control view with approval, results, and participation controls.
+- [x] Build an auto-updating results wall with names, scores, badges, progress, word responses, and approved work.
+- [x] Incorporate accessible Google Drive references and create teacher-editable content and media link areas.
+- [x] Verify accessible, tablet-friendly layout across landing, challenge, passport, staff, and live-wall pages.
+- [x] Add and run Vitest coverage for core challenge, scoring, persistence, and moderation behavior.
+- [ ] Save a final project checkpoint after verification.
+- [x] Implement a real tablet-friendly Welcome Quiz with answer selection and validation.
+- [x] Add staff controls for participant and live-wall visibility.
+- [x] Show badge and clearer activity-progress information on the live results wall.
+- [x] Add tests for score aggregation and persisted completion rules.
+- [x] Correct first-time completion persistence and prevent duplicate point awards.
+- [x] Verify direct completion persistence, duplicate prevention, score aggregation, and answer validation with Vitest.
