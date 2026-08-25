@@ -25,6 +25,9 @@
 - [x] Simplify landing-page navigation, hero content, and challenge presentation for younger students and tablet use.
 - [x] Redesign the passport, live wall, and staff views with consistent light visual hierarchy and accessible contrast.
 - [x] Verify the redesigned interface at desktop and tablet breakpoints.
-- [ ] Save a redesign checkpoint after verification.
+- [x] Save a redesign checkpoint after verification.
 - [x] Reduce landing-page content density and simplify the challenge flow in the bright participant experience.
 - [x] Verify the bright passport and staff pages at the tablet breakpoint and correct any responsive issues.
+- [x] Remove the visible teacher-resource link from the student activity dialog while retaining staff resource management.
+- [x] Upgrade challenge cards into more playful, game-like activity tiles with clearer visual rewards.
+- [ ] Verify the refined student activity experience and save an updated checkpoint.

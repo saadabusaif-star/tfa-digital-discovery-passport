@@ -19,6 +19,17 @@ const zones = [
   { key: "connect", label: "Connect", icon: UsersRound },
 ] as const;
 
+const gameCues: Record<Activity["kind"], { label: string; action: string; tone: string }> = {
+  quiz: { label: "Quick quiz", action: "Tap to play", tone: "sun" },
+  scenario: { label: "Safety quest", action: "Choose wisely", tone: "mint" },
+  puzzle: { label: "Code mission", action: "Crack the clue", tone: "violet" },
+  hunt: { label: "QR quest", action: "Find the clues", tone: "coral" },
+  timeline: { label: "Time challenge", action: "Put it in order", tone: "blue" },
+  reflection: { label: "Idea spark", action: "Share your voice", tone: "mint" },
+  creative: { label: "Create studio", action: "Make it yours", tone: "coral" },
+  vote: { label: "Power pick", action: "Make your choice", tone: "sun" },
+};
+
 function ActivityIcon({ kind }: { kind: Activity["kind"] }) {
   const Icon = kind === "scenario" ? ShieldCheck : kind === "puzzle" ? Code2 : kind === "creative" ? Palette : kind === "reflection" ? Lightbulb : kind === "vote" ? Radio : kind === "hunt" ? Compass : Gamepad2;
   return <Icon size={20} strokeWidth={2.15} />;
@@ -73,7 +84,7 @@ export default function Home() {
 
       <section className="container simple-challenge-section" id="challenge-map"><div className="simple-section-heading"><div><p className="section-kicker">Pick a zone</p><h2>What would you like to try?</h2><p>Open any card. You can change zones whenever you want.</p></div><div className="challenge-count"><b>{activities.data?.length ?? 9}</b><span>open challenges</span></div></div>
         <div className="zone-filter" role="tablist" aria-label="Challenge zones">{zones.map(zone => { const Icon = zone.icon; return <button key={zone.key} type="button" role="tab" aria-selected={activeZone === zone.key} onClick={() => setActiveZone(zone.key)} className={activeZone === zone.key ? "zone-filter__button zone-filter__button--active" : "zone-filter__button"}><Icon size={16} /> {zone.label}</button>; })}</div>
-        {activities.isLoading ? <div className="loading-panel loading-panel--light"><Loader2 className="animate-spin" /> Loading challenges…</div> : <div className="simple-activity-grid">{visibleActivities.map(activity => <button key={activity.id} type="button" onClick={() => setSelectedActivity(activity)} className={completedIds.has(activity.id) ? "simple-activity-card simple-activity-card--complete" : "simple-activity-card"}><span className={`simple-activity-card__zone simple-activity-card__zone--${activity.zone}`}>{activity.zone}</span><span className="simple-activity-card__icon"><ActivityIcon kind={activity.kind} /></span><span className="simple-activity-card__copy"><strong>{activity.title}</strong><small>{activity.summary}</small></span><span className="simple-activity-card__points">{completedIds.has(activity.id) ? "Done" : `${activity.points} pts`}</span><ArrowRight size={18} /></button>)}</div>}
+        {activities.isLoading ? <div className="loading-panel loading-panel--light"><Loader2 className="animate-spin" /> Loading challenges…</div> : <div className="simple-activity-grid">{visibleActivities.map(activity => { const cue = gameCues[activity.kind]; const isComplete = completedIds.has(activity.id); return <button key={activity.id} type="button" onClick={() => setSelectedActivity(activity)} className={isComplete ? `simple-activity-card simple-activity-card--complete game-tile game-tile--${cue.tone}` : `simple-activity-card game-tile game-tile--${cue.tone}`}><span className={`simple-activity-card__zone simple-activity-card__zone--${activity.zone}`}>{cue.label}</span><span className="game-tile__art"><span className="game-tile__spark">✦</span><span className="simple-activity-card__icon"><ActivityIcon kind={activity.kind} /></span></span><span className="simple-activity-card__copy"><strong>{activity.title}</strong><small>{activity.summary}</small></span><span className="game-tile__footer"><em>{isComplete ? "Challenge complete" : cue.action}</em><b>{isComplete ? "✓ Badge earned" : `+${activity.points} pts`}</b></span><ArrowRight size={18} /></button>; })}</div>}
       </section>
 
       <section className="container simple-live-banner"><div><Radio size={20} /><span><b>The event is live.</b> See votes, approved work, and explorer progress as it appears.</span></div><div className="simple-live-banner__stats"><span><b>{live.data?.totals.participantCount ?? 0}</b> passports</span><span><b>{live.data?.totals.completionCount ?? 0}</b> challenges</span></div><Button className="navy-button" onClick={() => setLocation("/live")}>View live wall</Button></section>

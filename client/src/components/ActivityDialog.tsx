@@ -107,7 +107,6 @@ export function ActivityDialog({ activity, accessCode, onClose, onCompleted }: A
         <p className="dialog-meta">{activity.badgeName} · {activity.points} points</p>
         <h2 id="activity-title">{activity.title}</h2>
         <p className="dialog-summary">{activity.instructions}</p>
-        {activity.resourceUrl && <a className="resource-link" href={activity.resourceUrl} target="_blank" rel="noreferrer">Open teacher resource ↗</a>}
         {requiresPassport ? (
           <div className="passport-needed">
             <LockKeyhole size={22} />
