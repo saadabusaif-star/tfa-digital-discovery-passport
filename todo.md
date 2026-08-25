@@ -30,4 +30,8 @@
 - [x] Verify the bright passport and staff pages at the tablet breakpoint and correct any responsive issues.
 - [x] Remove the visible teacher-resource link from the student activity dialog while retaining staff resource management.
 - [x] Upgrade challenge cards into more playful, game-like activity tiles with clearer visual rewards.
-- [ ] Verify the refined student activity experience and save an updated checkpoint.
+- [x] Verify the refined student activity experience and save an updated checkpoint.
+- [x] Add complete multi-question content and appropriate game interactions for every activity type.
+- [x] Redesign all student activity pop-ups with a consistent friendly challenge layout, progress states, and feedback.
+- [x] Preserve creative submission, reflection, and voting tasks inside the redesigned pop-up experience.
+- [ ] Test all pop-up challenge flows and save an updated checkpoint.

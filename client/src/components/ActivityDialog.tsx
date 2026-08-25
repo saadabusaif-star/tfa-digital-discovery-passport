@@ -3,142 +3,73 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/trpc";
-import { Activity } from "../../../drizzle/schema";
-import { Check, FileUp, Loader2, LockKeyhole, Sparkles, X } from "lucide-react";
-import { ChangeEvent, useState } from "react";
+import type { Activity } from "../../../drizzle/schema";
+import { ArrowRight, Check, CheckCircle2, FileUp, Lightbulb, Loader2, LockKeyhole, Sparkles, X } from "lucide-react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { toast } from "sonner";
 
-type ActivityDialogProps = {
-  activity: Activity | null;
-  accessCode: string | null;
-  onClose: () => void;
-  onCompleted: () => void;
-};
+type ActivityDialogProps = { activity: Activity | null; accessCode: string | null; onClose: () => void; onCompleted: () => void };
+type Question = { prompt: string; hint?: string; options: string[]; correct?: string };
+type Challenge = { intro: string; questions?: Question[]; completionResponse?: string; missionSteps?: string[]; fieldLabel?: string; fieldPlaceholder?: string; submissionKind?: "pixel-art" | "meme" | "website-mockup" | "reflection" | "other" };
 
-const kindToSubmission = (kind: Activity["kind"]) => {
-  if (kind === "reflection") return "reflection" as const;
-  if (kind === "creative") return "pixel-art" as const;
-  return "other" as const;
+const challenges: Record<string, Challenge> = {
+  "welcome-quiz": { intro: "Three quick choices unlock your first badge. Choose the answer that shows smart digital citizenship.", completionResponse: "Check, create, and be kind online", questions: [
+    { prompt: "Which choice shows responsible digital citizenship?", options: ["Check, create, and be kind online", "Copy every answer you find online", "Share my password with friends"], correct: "Check, create, and be kind online" },
+    { prompt: "Which is the strongest password idea?", options: ["MyName123", "A long, unique passphrase", "The word password"], correct: "A long, unique passphrase" },
+    { prompt: "Someone posts an unkind comment. What is the best first step?", options: ["Reply with something mean", "Pause and report it", "Share it with everyone"], correct: "Pause and report it" },
+  ] },
+  "cyber-escape": { intro: "Make the safest choice in each situation. Each good decision opens the next digital door.", completionResponse: "Check the sender and tell a trusted adult", questions: [
+    { prompt: "You receive a strange message with a link. What should you do?", options: ["Check the sender and tell a trusted adult", "Open the link quickly", "Send it to all your friends"], correct: "Check the sender and tell a trusted adult" },
+    { prompt: "A website asks for your school password unexpectedly. What is safest?", options: ["Type it in immediately", "Close it and use the official school site", "Save it in a public note"], correct: "Close it and use the official school site" },
+    { prompt: "A friend asks to borrow your login. What should you say?", options: ["Yes, just once", "No—accounts and passwords stay private", "Put the password in a group chat"], correct: "No—accounts and passwords stay private" },
+  ] },
+  "code-breaker": { intro: "Follow the clues, spot the pattern, and reveal the secret ICT word.", completionResponse: "CREATE", questions: [
+    { prompt: "Which pattern comes next: 2, 4, 8, 16, …?", options: ["18", "32", "64"], correct: "32" },
+    { prompt: "In binary, which digit is used?", options: ["0 and 1", "1 and 2", "A and B"], correct: "0 and 1" },
+    { prompt: "Your final code word is…", options: ["CREATE", "CONNECT", "EXPLORE"], correct: "CREATE" },
+  ] },
+  "tech-timeline": { intro: "Travel through time: put inventions in the logical order, then finish the timeline challenge.", completionResponse: "Internet → Smartphone → AI tools", questions: [
+    { prompt: "Which came first?", options: ["The internet", "The smartphone", "AI tools"], correct: "The internet" },
+    { prompt: "Which device made the internet personal and portable for many people?", options: ["Smartphone", "Typewriter", "Cassette player"], correct: "Smartphone" },
+    { prompt: "Choose the best timeline.", options: ["Internet → Smartphone → AI tools", "AI tools → Internet → Smartphone", "Smartphone → AI tools → Internet"], correct: "Internet → Smartphone → AI tools" },
+  ] },
+  "qr-quest": { intro: "This is a moving mission. Scan the event QR clues in any order, collect their letters, then type the final discovery word.", missionSteps: ["Scan at least three QR clues around the event space.", "Write down the letter or word from each clue.", "Use your clues to unlock the final discovery word."], fieldLabel: "Final discovery word", fieldPlaceholder: "Type the word you discovered" },
+  "pixel-identity": { intro: "Turn an idea into a digital identity card that you would be proud to show in the gallery.", missionSteps: ["Choose a theme: future self, tech hero, or ICT club member.", "Create a pixel avatar, digital sticker, or badge in an approved drawing tool.", "Upload your work or explain the design so staff can review it."], fieldLabel: "Tell us about your creation", fieldPlaceholder: "For example: My avatar uses green and gold to show creativity and teamwork.", submissionKind: "pixel-art" },
+  "dream-site": { intro: "Imagine a one-screen website that makes students excited to join the ICT Club.", missionSteps: ["Give your club page a strong title.", "Add one image or visual idea and a short welcome message.", "Include an invitation that tells students what to do next."], fieldLabel: "Describe your website idea", fieldPlaceholder: "For example: My homepage welcomes students to the TFA Tech Makers Club…", submissionKind: "website-mockup" },
+  "future-voice": { intro: "Your idea can become part of the event story. Share one positive word or short thought about ICT.", missionSteps: ["Think about a skill, project, or technology that interests you.", "Use a positive, school-suitable word or phrase.", "Submit it for staff approval on the live wall."], fieldLabel: "Your ICT thought", fieldPlaceholder: "For example: Inventive, Creative coding, Building ideas", submissionKind: "reflection" },
+  "future-vote": { intro: "Make your choice and help shape the live event display.", questions: [{ prompt: "Which ICT skill would you most like to develop this year?", options: ["Coding & robotics", "Digital design", "Cyber safety", "Creative media"] }] },
 };
 
 function readUpload(file: File) {
-  return new Promise<{ dataBase64: string; fileName: string; mimeType: string }>((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onerror = () => reject(new Error("The evidence file could not be read."));
-    reader.onload = () => resolve({ dataBase64: String(reader.result), fileName: file.name, mimeType: file.type });
-    reader.readAsDataURL(file);
-  });
+  return new Promise<{ dataBase64: string; fileName: string; mimeType: string }>((resolve, reject) => { const reader = new FileReader(); reader.onerror = () => reject(new Error("The evidence file could not be read.")); reader.onload = () => resolve({ dataBase64: String(reader.result), fileName: file.name, mimeType: file.type }); reader.readAsDataURL(file); });
 }
 
 export function ActivityDialog({ activity, accessCode, onClose, onCompleted }: ActivityDialogProps) {
   const utils = trpc.useUtils();
-  const [answer, setAnswer] = useState("");
-  const [selectedChoice, setSelectedChoice] = useState("");
-  const [upload, setUpload] = useState<{ dataBase64: string; fileName: string; mimeType: string } | undefined>();
-  const complete = trpc.event.complete.useMutation({
-    onSuccess: result => {
-      toast.success(result.alreadyCompleted ? "This challenge is already in your passport." : `${result.pointsAdded} points added to your passport.`);
-      utils.event.passport.invalidate();
-      utils.event.liveBoard.invalidate();
-      onCompleted();
-    },
-    onError: error => toast.error(error.message),
-  });
-  const submit = trpc.event.submit.useMutation({
-    onSuccess: async () => {
-      if (!activity || !accessCode) return;
-      await complete.mutateAsync({ accessCode, activitySlug: activity.slug, responseText: answer });
-      toast.success("Your work is now waiting for staff approval.");
-    },
-    onError: error => toast.error(error.message),
-  });
-  const vote = trpc.event.vote.useMutation({
-    onSuccess: async () => {
-      if (!activity || !accessCode) return;
-      await complete.mutateAsync({ accessCode, activitySlug: activity.slug, responseText: selectedChoice });
-      utils.event.liveBoard.invalidate();
-    },
-    onError: error => toast.error(error.message),
-  });
-
+  const [step, setStep] = useState(0); const [picked, setPicked] = useState(""); const [feedback, setFeedback] = useState<"idle" | "wrong" | "right">("idle"); const [challengeReady, setChallengeReady] = useState(false); const [answer, setAnswer] = useState(""); const [upload, setUpload] = useState<{ dataBase64: string; fileName: string; mimeType: string }>();
+  useEffect(() => { setStep(0); setPicked(""); setFeedback("idle"); setChallengeReady(false); setAnswer(""); setUpload(undefined); }, [activity?.id]);
+  const complete = trpc.event.complete.useMutation({ onSuccess: result => { toast.success(result.alreadyCompleted ? "This challenge is already in your passport." : `${result.pointsAdded} points and a badge added to your passport.`); utils.event.passport.invalidate(); utils.event.liveBoard.invalidate(); onCompleted(); }, onError: error => toast.error(error.message) });
+  const submit = trpc.event.submit.useMutation({ onSuccess: async () => { if (!activity || !accessCode) return; await complete.mutateAsync({ accessCode, activitySlug: activity.slug, responseText: challenge?.completionResponse }); toast.success("Your work is now waiting for staff approval."); }, onError: error => toast.error(error.message) });
+  const vote = trpc.event.vote.useMutation({ onSuccess: async () => { if (!activity || !accessCode) return; await complete.mutateAsync({ accessCode, activitySlug: activity.slug, responseText: picked }); utils.event.liveBoard.invalidate(); }, onError: error => toast.error(error.message) });
   if (!activity) return null;
-  const requiresPassport = !accessCode;
-  const isCreative = activity.kind === "creative" || activity.kind === "reflection";
-  const choices = activity.kind === "quiz"
-    ? ["Check, create, and be kind online", "Copy every answer you find online", "Share my password with friends"]
-    : activity.kind === "scenario"
-    ? ["Check the sender and tell a trusted adult", "Click quickly before it disappears", "Share it with everyone"]
-    : activity.kind === "vote"
-      ? ["Coding & robotics", "Digital design", "Cyber safety", "Creative media"]
-      : activity.kind === "timeline"
-        ? ["Internet → Smartphone → AI tools", "AI tools → Internet → Smartphone", "Smartphone → AI tools → Internet"]
-        : activity.kind === "puzzle"
-          ? ["CREATE", "CONNECT", "EXPLORE"]
-          : [];
+  const challenge = challenges[activity.slug] ?? { intro: activity.instructions };
+  const questions = challenge.questions ?? []; const question = questions[step]; const isCreative = Boolean(challenge.submissionKind); const isVote = activity.slug === "future-vote"; const isMissionInput = activity.slug === "qr-quest"; const requiresPassport = !accessCode;
+  const busy = complete.isPending || submit.isPending || vote.isPending;
+  const selectAnswer = (option: string) => { setPicked(option); setFeedback("idle"); };
+  const checkQuestion = () => { if (!picked) return toast.error("Choose an answer before continuing."); if (!question?.correct) { setChallengeReady(true); return; } if (picked !== question.correct) { setFeedback("wrong"); return; } setFeedback("right"); window.setTimeout(() => { if (step < questions.length - 1) { setStep(current => current + 1); setPicked(""); setFeedback("idle"); } else { setChallengeReady(true); } }, 420); };
+  const finishMission = () => { if (!accessCode) return; if (isMissionInput && answer.trim().length < 3) return toast.error("Enter the final discovery word from your QR clues."); complete.mutate({ accessCode, activitySlug: activity.slug, responseText: challenge.completionResponse ?? answer }); };
+  const submitCreative = () => { if (!accessCode) return; submit.mutate({ accessCode, activitySlug: activity.slug, kind: challenge.submissionKind ?? "other", body: answer, upload }); };
+  const finishQuestionChallenge = () => { if (!accessCode) return; if (isVote) { vote.mutate({ accessCode, optionText: picked }); return; } complete.mutate({ accessCode, activitySlug: activity.slug, responseText: challenge.completionResponse }); };
+  const progress = questions.length ? `${Math.min(step + 1, questions.length)} of ${questions.length}` : "Mission";
 
-  const startCompletion = () => {
-    if (!accessCode) return;
-    if (activity.kind === "vote") {
-      if (!selectedChoice) return toast.error("Select your vote before continuing.");
-      vote.mutate({ accessCode, optionText: selectedChoice });
-      return;
-    }
-    if (activity.kind === "hunt" && answer.trim().length < 3) return toast.error("Enter the discovery word from the QR clues.");
-    if (choices.length && !selectedChoice) return toast.error("Choose an answer before continuing.");
-    complete.mutate({ accessCode, activitySlug: activity.slug, responseText: selectedChoice || answer });
-  };
-
-  const submitCreativeWork = () => {
-    if (!accessCode) return;
-    submit.mutate({
-      accessCode,
-      activitySlug: activity.slug,
-      kind: kindToSubmission(activity.kind),
-      body: answer,
-      upload,
-    });
-  };
-
-  return (
-    <div className="dialog-backdrop" role="presentation" onMouseDown={onClose}>
-      <section className="activity-dialog" role="dialog" aria-modal="true" aria-labelledby="activity-title" onMouseDown={event => event.stopPropagation()}>
-        <button className="dialog-close" type="button" onClick={onClose} aria-label="Close activity"><X size={20} /></button>
-        <div className={`zone-marker zone-marker--${activity.zone}`}>{activity.zone}</div>
-        <p className="dialog-meta">{activity.badgeName} · {activity.points} points</p>
-        <h2 id="activity-title">{activity.title}</h2>
-        <p className="dialog-summary">{activity.instructions}</p>
-        {requiresPassport ? (
-          <div className="passport-needed">
-            <LockKeyhole size={22} />
-            <div><strong>Create a passport first.</strong><span>Your name or team name keeps your points and badges safe across tablets.</span></div>
-          </div>
-        ) : (
-          <div className="dialog-workspace">
-            {choices.length > 0 && <div className="choice-stack">{choices.map(choice => <button type="button" key={choice} onClick={() => setSelectedChoice(choice)} className={selectedChoice === choice ? "choice-card choice-card--selected" : "choice-card"}><span>{choice}</span>{selectedChoice === choice && <Check size={18} />}</button>)}</div>}
-            {activity.kind === "hunt" && <div className="field-wrap"><Label htmlFor="hunt-word">QR Quest discovery word</Label><Input id="hunt-word" value={answer} onChange={event => setAnswer(event.target.value)} placeholder="Type the final word" /></div>}
-            {isCreative && <>
-              <div className="field-wrap"><Label htmlFor="work-response">{activity.kind === "reflection" ? "Your positive ICT word or short thought" : "Tell us about your creation"}</Label><Textarea id="work-response" value={answer} onChange={event => setAnswer(event.target.value)} placeholder={activity.kind === "reflection" ? "For example: Inventive" : "A short caption or design idea"} maxLength={600} /></div>
-              <label className={upload ? "file-drop file-drop--ready" : "file-drop"}>
-                <input type="file" accept="image/png,image/jpeg,image/webp,application/pdf" className="sr-only" onChange={async (event: ChangeEvent<HTMLInputElement>) => {
-                  const file = event.target.files?.[0];
-                  if (!file) return;
-                  if (file.size > 4 * 1024 * 1024) return toast.error("Choose a file smaller than 4 MB.");
-                  try { setUpload(await readUpload(file)); } catch (error) { toast.error(error instanceof Error ? error.message : "File upload failed."); }
-                }} />
-                <FileUp size={20} /><span><strong>{upload ? upload.fileName : "Attach optional evidence"}</strong><small>PNG, JPEG, WebP, or PDF · Max 4 MB</small></span>
-              </label>
-            </>}
-            {activity.kind === "quiz" && <div className="quick-success"><Sparkles size={20} /><span>Question: Which choice shows responsible digital citizenship?</span></div>}
-            <div className="dialog-actions">
-              <Button variant="outline" onClick={onClose}>Save for later</Button>
-              <Button className="gold-button" disabled={complete.isPending || submit.isPending || vote.isPending} onClick={isCreative ? submitCreativeWork : startCompletion}>
-                {(complete.isPending || submit.isPending || vote.isPending) && <Loader2 className="animate-spin" size={16} />}
-                {isCreative ? "Submit for review" : activity.kind === "vote" ? "Cast my vote" : "Add to passport"}
-              </Button>
-            </div>
-          </div>
-        )}
-      </section>
-    </div>
-  );
+  return <div className="dialog-backdrop" role="presentation" onMouseDown={onClose}><section className="activity-dialog activity-dialog--game" role="dialog" aria-modal="true" aria-labelledby="activity-title" onMouseDown={event => event.stopPropagation()}>
+    <button className="dialog-close" type="button" onClick={onClose} aria-label="Close activity"><X size={20} /></button>
+    <div className="activity-dialog__top"><div><span className={`zone-marker zone-marker--${activity.zone}`}>{activity.zone}</span><p className="dialog-meta">{activity.badgeName} · {activity.points} points</p></div>{questions.length > 0 && <span className="challenge-counter">Challenge {progress}</span>}</div>
+    <h2 id="activity-title">{activity.title}</h2><p className="dialog-summary">{challenge.intro}</p>
+    {requiresPassport ? <div className="passport-needed"><LockKeyhole size={22} /><div><strong>Create a passport first.</strong><span>Your name or team name keeps your points and badges safe across tablets.</span></div></div> : <div className="dialog-workspace">
+      {questions.length > 0 && !challengeReady && question && <div className="question-stage"><div className="question-stage__header"><span className="question-icon"><Lightbulb size={19} /></span><div><span className="question-label">Your challenge</span><h3>{question.prompt}</h3>{question.hint && <p>{question.hint}</p>}</div></div><div className="choice-stack">{question.options.map((option, index) => <button type="button" key={option} onClick={() => selectAnswer(option)} className={picked === option ? "choice-card choice-card--selected" : "choice-card"}><b>{String.fromCharCode(65 + index)}</b><span>{option}</span>{picked === option && <Check size={18} />}</button>)}</div>{feedback === "wrong" && <div className="answer-feedback answer-feedback--wrong">Try another answer. Read the question carefully and think like a digital detective.</div>}{feedback === "right" && <div className="answer-feedback answer-feedback--right"><CheckCircle2 size={17} /> Great choice! Unlocking the next step…</div>}{!feedback || feedback === "idle" ? <div className="dialog-actions"><Button variant="outline" onClick={onClose}>Save for later</Button><Button className="gold-button" onClick={checkQuestion}>Check answer <ArrowRight size={16} /></Button></div> : null}</div>}
+      {questions.length > 0 && challengeReady && <div className="challenge-success"><span><Sparkles size={22} /></span><div><p>Challenge unlocked</p><h3>{isVote ? "Your choice is ready to share." : "You solved every step!"}</h3><small>{isVote ? "Cast your vote to add it to the live display." : `Add ${activity.points} points and the ${activity.badgeName} badge to your passport.`}</small></div><Button className="gold-button" disabled={busy} onClick={finishQuestionChallenge}>{busy && <Loader2 className="animate-spin" size={16} />}{isVote ? "Cast my vote" : "Claim my badge"} <ArrowRight size={16} /></Button></div>}
+      {(isCreative || isMissionInput) && <div className="mission-stage"><div className="mission-stage__header"><span className="question-icon"><Sparkles size={19} /></span><div><span className="question-label">Mission steps</span><h3>{isMissionInput ? "Find, scan, and unlock." : "Make your idea visible."}</h3></div></div>{challenge.missionSteps && <ol className="mission-list">{challenge.missionSteps.map((item, index) => <li key={item}><b>{index + 1}</b><span>{item}</span></li>)}</ol>}<div className="field-wrap"><Label htmlFor="mission-response">{challenge.fieldLabel}</Label><Textarea id="mission-response" value={answer} onChange={event => setAnswer(event.target.value)} placeholder={challenge.fieldPlaceholder} maxLength={600} /></div>{isCreative && <label className={upload ? "file-drop file-drop--ready" : "file-drop"}><input type="file" accept="image/png,image/jpeg,image/webp,application/pdf" className="sr-only" onChange={async (event: ChangeEvent<HTMLInputElement>) => { const file = event.target.files?.[0]; if (!file) return; if (file.size > 4 * 1024 * 1024) return toast.error("Choose a file smaller than 4 MB."); try { setUpload(await readUpload(file)); } catch (error) { toast.error(error instanceof Error ? error.message : "File upload failed."); } }} /><FileUp size={20} /><span><strong>{upload ? upload.fileName : "Attach optional evidence"}</strong><small>PNG, JPEG, WebP, or PDF · Max 4 MB</small></span></label>}<div className="dialog-actions"><Button variant="outline" onClick={onClose}>Save for later</Button><Button className="gold-button" disabled={busy} onClick={isCreative ? submitCreative : finishMission}>{busy && <Loader2 className="animate-spin" size={16} />}{isCreative ? "Submit for review" : "Complete mission"} <ArrowRight size={16} /></Button></div></div>}
+    </div>}
+  </section></div>;
 }
