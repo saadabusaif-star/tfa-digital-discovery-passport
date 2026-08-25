@@ -14,10 +14,17 @@
 - [x] Incorporate accessible Google Drive references and create teacher-editable content and media link areas.
 - [x] Verify accessible, tablet-friendly layout across landing, challenge, passport, staff, and live-wall pages.
 - [x] Add and run Vitest coverage for core challenge, scoring, persistence, and moderation behavior.
-- [ ] Save a final project checkpoint after verification.
+- [x] Save a final project checkpoint after verification.
 - [x] Implement a real tablet-friendly Welcome Quiz with answer selection and validation.
 - [x] Add staff controls for participant and live-wall visibility.
 - [x] Show badge and clearer activity-progress information on the live results wall.
 - [x] Add tests for score aggregation and persisted completion rules.
 - [x] Correct first-time completion persistence and prevent duplicate point awards.
 - [x] Verify direct completion persistence, duplicate prevention, score aggregation, and answer validation with Vitest.
+- [x] Replace the dark premium visual system with a brighter, simpler, school-friendly theme.
+- [x] Simplify landing-page navigation, hero content, and challenge presentation for younger students and tablet use.
+- [x] Redesign the passport, live wall, and staff views with consistent light visual hierarchy and accessible contrast.
+- [x] Verify the redesigned interface at desktop and tablet breakpoints.
+- [ ] Save a redesign checkpoint after verification.
+- [x] Reduce landing-page content density and simplify the challenge flow in the bright participant experience.
+- [x] Verify the bright passport and staff pages at the tablet breakpoint and correct any responsive issues.
