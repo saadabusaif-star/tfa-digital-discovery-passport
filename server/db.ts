@@ -216,6 +216,22 @@ const EVENT_ACTIVITY_CATALOG = [
   },
 ];
 
+const SUBJECT_QUIZ_CATALOG = [
+  { slug: "science-quiz", title: "Science", zone: "discover" as const, kind: "quiz" as const, summary: "Explore Earth, the air we breathe, and the energy inside plants.", instructions: "Answer three questions: easy, medium, and hard.", resourceUrl: null, resourceLabel: null, points: 30, badgeKey: "science-spark", badgeName: "Science Spark", gradeHint: "Easy · Medium · Hard", displayOrder: 1 },
+  { slug: "mathematics-quiz", title: "Mathematics", zone: "play" as const, kind: "quiz" as const, summary: "Work through multiplication, percentages, and algebra.", instructions: "Answer three questions: easy, medium, and hard.", resourceUrl: null, resourceLabel: null, points: 30, badgeKey: "math-mind", badgeName: "Math Mind", gradeHint: "Easy · Medium · Hard", displayOrder: 2 },
+  { slug: "stem-quiz", title: "STEM", zone: "play" as const, kind: "quiz" as const, summary: "Test your knowledge of computers, storage, and algorithms.", instructions: "Answer three questions: easy, medium, and hard.", resourceUrl: null, resourceLabel: null, points: 30, badgeKey: "stem-builder", badgeName: "STEM Builder", gradeHint: "Easy · Medium · Hard", displayOrder: 3 },
+  { slug: "pe-quiz", title: "Physical Education", zone: "connect" as const, kind: "quiz" as const, summary: "Think about football, fitness, and staying ready to move.", instructions: "Answer three questions: easy, medium, and hard.", resourceUrl: null, resourceLabel: null, points: 30, badgeKey: "active-ace", badgeName: "Active Ace", gradeHint: "Easy · Medium · Hard", displayOrder: 4 },
+  { slug: "geography-quiz", title: "Geography", zone: "discover" as const, kind: "quiz" as const, summary: "Travel through continents, oceans, and the world map.", instructions: "Answer three questions: easy, medium, and hard.", resourceUrl: null, resourceLabel: null, points: 30, badgeKey: "world-wise", badgeName: "World Wise", gradeHint: "Easy · Medium · Hard", displayOrder: 5 },
+];
+
+const SUBJECT_QUIZ_ANSWERS: Record<string, string[]> = {
+  "science-quiz": ["B) Earth", "B) Oxygen", "C) Photosynthesis"],
+  "mathematics-quiz": ["B) 56", "C) 50", "B) 5"],
+  "stem-quiz": ["A) Central Processing Unit", "C) SSD", "B) A step-by-step solution to a problem"],
+  "pe-quiz": ["C) 11", "A) Running", "B) To prepare the body and reduce injury risk"],
+  "geography-quiz": ["C) Asia", "D) Pacific Ocean", "D) Russia"],
+};
+
 export const LIVE_POLL_PROMPTS = [
   { key: "future-tech", eyebrow: "Future Tech Vote", title: "Skills students want", question: "Which ICT skill would you most like to develop this year?" },
   { key: "timetable-pulse", eyebrow: "Welcome Live Poll", title: "Timetable priorities", question: "Which timetable detail would you like to understand first?" },
@@ -285,7 +301,8 @@ export async function getUserByOpenId(openId: string) {
 
 export async function ensureEventCatalog() {
   const db = await requireDb();
-  for (const activity of EVENT_ACTIVITY_CATALOG) {
+  await db.update(activities).set({ isActive: 0, updatedAt: new Date() });
+  for (const activity of SUBJECT_QUIZ_CATALOG) {
     await db.insert(activities).values(activity).onDuplicateKeyUpdate({
       set: { ...activity, updatedAt: new Date() },
     });
@@ -342,9 +359,20 @@ export async function completeActivity(input: { accessCode: string; activitySlug
   const participant = await getParticipantByCode(input.accessCode);
   const activity = await db.select().from(activities).where(eq(activities.slug, input.activitySlug)).limit(1);
   if (!activity[0]) throw new Error("Activity not found.");
-  const correctAnswer = VALIDATED_ACTIVITY_ANSWERS[activity[0].slug];
-  if (correctAnswer && input.responseText?.trim() !== correctAnswer) {
-    throw new Error("That answer is not quite right. Review the challenge and try again.");
+  const expectedAnswers = SUBJECT_QUIZ_ANSWERS[activity[0].slug];
+  let quizScore: number | undefined;
+  let awardedPoints = activity[0].points;
+  if (expectedAnswers) {
+    let submittedAnswers: unknown;
+    try { submittedAnswers = JSON.parse(input.responseText ?? "[]"); } catch { throw new Error("Please complete all three quiz questions before submitting."); }
+    if (!Array.isArray(submittedAnswers) || submittedAnswers.length !== expectedAnswers.length || !submittedAnswers.every(answer => typeof answer === "string")) {
+      throw new Error("Please complete all three quiz questions before submitting.");
+    }
+    quizScore = submittedAnswers.reduce((score, answer, index) => score + (answer === expectedAnswers[index] ? 1 : 0), 0);
+    awardedPoints = quizScore * 10;
+  } else {
+    const correctAnswer = VALIDATED_ACTIVITY_ANSWERS[activity[0].slug];
+    if (correctAnswer && input.responseText?.trim() !== correctAnswer) throw new Error("That answer is not quite right. Review the challenge and try again.");
   }
   const existing = await db.select().from(completions).where(and(eq(completions.participantId, participant.id), eq(completions.activityId, activity[0].id))).limit(1);
   if (!canAwardCompletion(Boolean(existing[0]))) return { alreadyCompleted: true, pointsAdded: 0, activity: activity[0] };
@@ -352,9 +380,9 @@ export async function completeActivity(input: { accessCode: string; activitySlug
     participantId: participant.id,
     activityId: activity[0].id,
     responseText: input.responseText?.trim() || null,
-    awardedPoints: activity[0].points,
+    awardedPoints,
   });
-  return { alreadyCompleted: false, pointsAdded: activity[0].points, activity: activity[0] };
+  return { alreadyCompleted: false, pointsAdded: awardedPoints, quizScore, questionCount: expectedAnswers?.length, activity: activity[0] };
 }
 
 export async function createCreativeSubmission(input: {
@@ -398,7 +426,7 @@ export async function castVote(input: { accessCode: string; optionText: string; 
 
 export async function getLiveBoard() {
   const db = await requireDb();
-  const [participantRows, completionRows, activityRows, approvedSubmissions, voteRows] = await Promise.all([
+  const [participantRows, completionRows, activityRows, approvedSubmissions, voteRows, subjectCompletionRows] = await Promise.all([
     db.select().from(participants).where(eq(participants.isActive, 1)),
     db.select().from(completions),
     listActivities(),
@@ -409,6 +437,11 @@ export async function getLiveBoard() {
       .where(eq(submissions.status, "approved"))
       .orderBy(desc(submissions.reviewedAt)),
     db.select().from(votes),
+    db.select({ completion: completions, activity: activities, displayName: participants.displayName })
+      .from(completions)
+      .innerJoin(activities, eq(completions.activityId, activities.id))
+      .innerJoin(participants, eq(completions.participantId, participants.id))
+      .where(eq(participants.isActive, 1)),
   ]);
   const visibleParticipantIds = participantRows.map(participant => participant.id);
   const visibleCompletions = completionRows.filter(item => visibleParticipantIds.includes(item.participantId));
@@ -434,11 +467,20 @@ export async function getLiveBoard() {
     return Object.entries(counts).map(([option, count]) => ({ option, count })).sort((a, b) => b.count - a.count);
   };
   const totalPoints = visibleCompletions.reduce((sum, completion) => sum + completion.awardedPoints, 0);
+  const subjectResults = subjectCompletionRows.map(row => {
+    const expectedAnswers = SUBJECT_QUIZ_ANSWERS[row.activity.slug];
+    if (!expectedAnswers) return undefined;
+    let answers: unknown;
+    try { answers = JSON.parse(row.completion.responseText ?? "[]"); } catch { answers = []; }
+    const score = Array.isArray(answers) ? answers.reduce((total, answer, index) => total + (answer === expectedAnswers[index] ? 1 : 0), 0) : 0;
+    return { participantId: row.completion.participantId, subject: row.activity.title, score, questionCount: expectedAnswers.length, points: row.completion.awardedPoints, completedAt: row.completion.completedAt, name: row.displayName };
+  }).filter((item): item is NonNullable<typeof item> => Boolean(item)).sort((a, b) => b.score - a.score || b.points - a.points).slice(0, 12);
   return {
     participants: participantScores,
     totals: { participantCount: participantRows.length, completionCount: visibleCompletions.length, totalPoints, activityCount: activityRows.length },
     votes: votesForPrompt("future-tech"),
     icebreakerPolls: LIVE_POLL_PROMPTS.filter(prompt => prompt.key !== "future-tech").map(prompt => ({ ...prompt, votes: votesForPrompt(prompt.key) })),
+    subjectResults,
     words: approvedSubmissions.filter(item => item.submission.kind === "reflection" && item.submission.body).slice(0, 24).map(item => item.submission.body as string),
     recentWork: approvedSubmissions.filter(item => item.submission.kind !== "reflection").slice(0, 8).map(item => ({
       id: item.submission.id,

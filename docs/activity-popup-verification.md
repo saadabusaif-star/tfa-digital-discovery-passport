@@ -37,3 +37,5 @@ The Future Tech Vote displayed four answer choices, a confirmation state, and a 
 The expanded Welcome Pulse activity was verified with a temporary participant. Its pop-up displayed all four student questions—timetable, elective, project, and school-rule prompts—together with the narrow progress indicator. Completing the form submitted it for staff approval and updated the temporary passport to one completed challenge, ten points, and one badge.
 
 The temporary participant also cast a timetable icebreaker response from the main page. After correcting the live-board poll retrieval, the big-screen Mentimeter-style section displayed **My class times** with a count of one, confirming the auto-updating poll route end to end.
+
+The simplified subject-quiz workflow was verified with a temporary student. The Science section displayed its required three questions in easy, medium, and hard sequence, accepted the supplied correct answers, awarded a score of 3/3 and 30 points, and displayed the student name with the Science result on the live board.

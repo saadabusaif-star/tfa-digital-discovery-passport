@@ -42,7 +42,7 @@
 - [x] Verify the QR Quest mission input and completion path with an active temporary participant.
 - [x] Submit one creative or reflection response, approve it through staff controls, and verify it on the live wall.
 - [x] Cast a Future Tech Vote and verify its persisted result on the live wall.
-- [ ] Approve a pending creative submission through the actual staff moderation interface and verify the resulting approved state.
+- [x] Staff-gallery approval verification superseded by the simplified subject-quiz scope, which no longer presents student creative submissions.
 - [x] Add narrow, readable progress indicators to the main challenge cards and all activity pop-ups.
 - [x] Make the pending-moderation message clear and student-friendly after creative work is submitted.
 - [x] Add Cyber Escape, Debug Station, Pixel Puzzle, and Tech Charades or GIF Creator game activities.
@@ -59,6 +59,18 @@
 - [x] Enlarge and clarify the UAE flag, The First Academy School logo, and primary school-event typography.
 - [x] Rework game, passport, poll, and live-result sections into a more modern, easy-to-scan hierarchy.
 - [x] Verify the contemporary redesign on desktop and tablet displays.
-- [ ] Save a checkpoint for the contemporary visual redesign.
+- [x] Save a checkpoint for the contemporary visual redesign.
 - [x] Rework the passport and live-wall component structures to match the contemporary event-site hierarchy.
 - [x] Verify the contemporary landing page, passport, and live wall on both desktop and tablet displays.
+- [x] Replace the multi-activity exploration interface with a simple choose-one-subject quiz flow.
+- [x] Add the supplied Science, Mathematics, STEM, PE, and Geography easy-medium-hard question sets.
+- [x] Enforce exactly three questions per chosen subject and calculate a named student score.
+- [x] Persist completed subject-quiz scores and display student names and results on the live board.
+- [x] Simplify the landing page, quiz pop-up, passport, and live wall around the new subject-quiz model.
+- [x] Test all five subject quizzes and the named result publication flow.
+- [ ] Save a checkpoint for the simplified subject-quiz platform.
+- [x] Clear stale unavailable passport codes so students can always restart the subject-quiz flow.
+- [x] Fix named subject-result retrieval on the live board and verify a completed quiz appears by student name.
+- [x] Show completion status only on the specific subject a student has finished.
+- [x] Simplify the passport page into a subject-quiz summary with completed subject results and a clear next-section action.
+- [x] Complete Mathematics, STEM, PE, and Geography quiz flows end to end and verify their named live-board results.
