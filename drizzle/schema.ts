@@ -31,6 +31,7 @@ export const participants = mysqlTable("participants", {
   displayName: varchar("displayName", { length: 80 }).notNull(),
   gradeBand: mysqlEnum("gradeBand", ["6-7", "8-9", "10-12"]).notNull(),
   eventSection: mysqlEnum("eventSection", ["boys", "girls", "unassigned"]).default("unassigned").notNull(),
+  classGroupId: int("classGroupId"),
   accessCode: varchar("accessCode", { length: 16 }).notNull().unique(),
   avatarColor: varchar("avatarColor", { length: 24 }).default("gold").notNull(),
   isActive: int("isActive").default(1).notNull(),
@@ -42,6 +43,16 @@ export const teacherAccessGrants = mysqlTable("teacher_access_grants", {
   id: int("id").autoincrement().primaryKey(),
   email: varchar("email", { length: 320 }).notNull().unique(),
   staffSection: mysqlEnum("staffSection", ["boys", "girls", "all"]).notNull(),
+  isActive: int("isActive").default(1).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export const classGroups = mysqlTable("class_groups", {
+  id: int("id").autoincrement().primaryKey(),
+  label: varchar("label", { length: 80 }).notNull(),
+  teacherSlot: varchar("teacherSlot", { length: 32 }).notNull(),
+  eventSection: mysqlEnum("eventSection", ["boys", "girls"]).notNull(),
   isActive: int("isActive").default(1).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
@@ -131,3 +142,4 @@ export type QuizSession = typeof quizSessions.$inferSelect;
 export type Submission = typeof submissions.$inferSelect;
 export type Vote = typeof votes.$inferSelect;
 export type TeacherAccessGrant = typeof teacherAccessGrants.$inferSelect;
+export type ClassGroup = typeof classGroups.$inferSelect;

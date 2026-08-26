@@ -3,6 +3,7 @@ import { drizzle } from "drizzle-orm/mysql2";
 import { customAlphabet } from "nanoid";
 import {
   activities,
+  classGroups,
   completions,
   eventSettings,
   InsertUser,
@@ -21,6 +22,11 @@ let _db: ReturnType<typeof drizzle> | null = null;
 
 const createAccessCode = customAlphabet("ABCDEFGHJKLMNPQRSTUVWXYZ23456789", 6);
 const createQuizSessionToken = customAlphabet("ABCDEFGHJKLMNPQRSTUVWXYZ23456789", 18);
+const DEFAULT_CLASS_GROUPS = Array.from({ length: 10 }, (_, teacherIndex) => {
+  const teacherNumber = teacherIndex + 1;
+  const eventSection = teacherNumber <= 5 ? "boys" as const : "girls" as const;
+  return Array.from({ length: 8 }, (_, classIndex) => ({ label: `Teacher${teacherNumber} · Class ${classIndex + 1}`, teacherSlot: `Teacher${teacherNumber}`, eventSection, isActive: 1 }));
+}).flat();
 
 const EVENT_ACTIVITY_CATALOG = [
   {
@@ -337,8 +343,22 @@ export async function listActivities() {
   return db.select().from(activities).where(eq(activities.isActive, 1)).orderBy(activities.displayOrder);
 }
 
-export async function createParticipant(input: { displayName: string; gradeBand: "6-7" | "8-9" | "10-12"; eventSection: "boys" | "girls" }) {
+async function ensureClassGroups() {
   const db = await requireDb();
+  const existing = await db.select({ id: classGroups.id }).from(classGroups).limit(1);
+  if (!existing.length) await db.insert(classGroups).values(DEFAULT_CLASS_GROUPS);
+}
+
+export async function listClassGroups(eventSection?: "boys" | "girls") {
+  await ensureClassGroups();
+  const db = await requireDb();
+  return db.select().from(classGroups).where(eventSection ? and(eq(classGroups.isActive, 1), eq(classGroups.eventSection, eventSection)) : eq(classGroups.isActive, 1)).orderBy(classGroups.teacherSlot, classGroups.label);
+}
+
+export async function createParticipant(input: { displayName: string; gradeBand: "6-7" | "8-9" | "10-12"; eventSection: "boys" | "girls"; classGroupId: number }) {
+  const db = await requireDb();
+  const classGroup = await db.select().from(classGroups).where(and(eq(classGroups.id, input.classGroupId), eq(classGroups.isActive, 1))).limit(1);
+  if (!classGroup[0] || classGroup[0].eventSection !== input.eventSection) throw new Error("Choose an active class from your selected Welcome Day section.");
   const palette = ["gold", "coral", "teal", "violet"];
   for (let attempt = 0; attempt < 4; attempt += 1) {
     const accessCode = `TFA-${createAccessCode()}`;
@@ -347,6 +367,7 @@ export async function createParticipant(input: { displayName: string; gradeBand:
         displayName: input.displayName.trim(),
         gradeBand: input.gradeBand,
         eventSection: input.eventSection,
+        classGroupId: input.classGroupId,
         accessCode,
         avatarColor: palette[Math.floor(Math.random() * palette.length)] ?? "gold",
       });
@@ -492,10 +513,11 @@ export async function castVote(input: { accessCode: string; optionText: string; 
   });
 }
 
-export async function getLiveBoard(eventSection?: "boys" | "girls") {
+export async function getLiveBoard(eventSection?: "boys" | "girls", classGroupId?: number) {
+  await ensureClassGroups();
   const db = await requireDb();
   const [participantRows, completionRows, activityRows, approvedSubmissions, voteRows, subjectCompletionRows] = await Promise.all([
-    db.select().from(participants).where(eventSection ? and(eq(participants.isActive, 1), eq(participants.eventSection, eventSection)) : eq(participants.isActive, 1)),
+    db.select().from(participants).where(classGroupId ? and(eq(participants.isActive, 1), eq(participants.classGroupId, classGroupId)) : eventSection ? and(eq(participants.isActive, 1), eq(participants.eventSection, eventSection)) : eq(participants.isActive, 1)),
     db.select().from(completions),
     listActivities(),
     db.select({ submission: submissions, displayName: participants.displayName, activityTitle: activities.title })
@@ -509,7 +531,7 @@ export async function getLiveBoard(eventSection?: "boys" | "girls") {
       .from(completions)
       .innerJoin(activities, eq(completions.activityId, activities.id))
       .innerJoin(participants, eq(completions.participantId, participants.id))
-      .where(eventSection ? and(eq(participants.isActive, 1), eq(participants.eventSection, eventSection)) : eq(participants.isActive, 1)),
+      .where(classGroupId ? and(eq(participants.isActive, 1), eq(participants.classGroupId, classGroupId)) : eventSection ? and(eq(participants.isActive, 1), eq(participants.eventSection, eventSection)) : eq(participants.isActive, 1)),
   ]);
   const visibleParticipantIds = participantRows.map(participant => participant.id);
   const visibleCompletions = completionRows.filter(item => visibleParticipantIds.includes(item.participantId));
@@ -535,6 +557,7 @@ export async function getLiveBoard(eventSection?: "boys" | "girls") {
     return Object.entries(counts).map(([option, count]) => ({ option, count })).sort((a, b) => b.count - a.count);
   };
   const totalPoints = visibleCompletions.reduce((sum, completion) => sum + completion.awardedPoints, 0);
+  const classGroup = classGroupId ? (await db.select().from(classGroups).where(eq(classGroups.id, classGroupId)).limit(1))[0] : undefined;
   const subjectResults = subjectCompletionRows.map(row => {
     if (!QUIZ_ACTIVITY_SLUGS.includes(row.activity.slug as QuizActivitySlug)) return undefined;
     const score = Math.max(0, Math.min(3, Math.round(row.completion.awardedPoints / 10)));
@@ -543,6 +566,8 @@ export async function getLiveBoard(eventSection?: "boys" | "girls") {
   return {
     participants: participantScores,
     eventSection: eventSection ?? "all",
+    classGroupId: classGroupId ?? null,
+    classGroup: classGroup ? { id: classGroup.id, label: classGroup.label, teacherSlot: classGroup.teacherSlot } : null,
     totals: { participantCount: participantRows.length, completionCount: visibleCompletions.length, totalPoints, activityCount: activityRows.length },
     votes: votesForPrompt("future-tech"),
     icebreakerPolls: LIVE_POLL_PROMPTS.filter(prompt => prompt.key !== "future-tech").map(prompt => ({ ...prompt, votes: votesForPrompt(prompt.key) })),

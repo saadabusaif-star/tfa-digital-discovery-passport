@@ -155,3 +155,15 @@
 - [x] Add a protected multi-teacher role and Boys/Girls section assignment model, with individual sign-in access rather than shared credentials.
 - [ ] Build staff controls for searching records, viewing section-specific results, controlling the section live board, and administering teacher access.
 - [ ] Verify ICT-only student routes and separate Boys/Girls teacher views, then document the secure teacher-onboarding steps.
+
+- [ ] Create ten individually named temporary teacher accounts with unique secure access details and Boys/Girls section assignments; do not use a shared password.
+- [ ] Add a dedicated temporary-teacher sign-in path that grants only the assigned control-room scope.
+- [ ] Validate that each temporary teacher account is isolated to its assigned section, can be paused, and does not expose student-side controls.
+- [ ] Prepare a securely shareable teacher roster with individual sign-in and scope instructions.
+- [ ] Await individual authorized teacher accounts before activating any Teacher1–Teacher10 slots; shared credentials are intentionally excluded from record and live-board control access.
+
+- [x] Add named class groups and assign each class to one teacher scope so Teacher1–Teacher10 can manage multiple classes without cross-class visibility.
+- [x] Require a student to select their class when creating an ICT record and store the class with the participant data.
+- [ ] Filter teacher record search, class live boards, results exports, and participant controls by the assigned class, preventing names from mixing.
+- [ ] Add simple administrator controls to create, rename, assign, and pause class groups for each teacher.
+- [ ] Verify that class records and class live boards remain isolated across multiple teachers and class groups.

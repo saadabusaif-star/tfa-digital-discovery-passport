@@ -14,10 +14,15 @@ export default function LiveWall() {
     const section = new URLSearchParams(window.location.search).get("section");
     return section === "boys" || section === "girls" ? section : undefined;
   });
+  const [classGroupId] = useState<number | undefined>(() => {
+    const value = Number(new URLSearchParams(window.location.search).get("class"));
+    return Number.isInteger(value) && value > 0 ? value : undefined;
+  });
   const { user, loading: authLoading } = useAuth();
-  const board = trpc.event.liveBoard.useQuery(eventSection ? { eventSection } : undefined, { refetchInterval: 3500 });
+  const board = trpc.event.liveBoard.useQuery(eventSection || classGroupId ? { eventSection, classGroupId } : undefined, { refetchInterval: 3500 });
   const totals = board.data?.totals;
   const isAdmin = user?.role === "admin";
+  const classLabel = board.data?.classGroup?.label ?? (classGroupId ? `Class ${classGroupId}` : undefined);
   const subjectLeaders = SUBJECT_QUIZZES.map(quiz => {
     const results = (board.data?.subjectResults ?? []).filter(result => result.subject === quiz.title).sort((a, b) => b.score - a.score || b.points - a.points || a.name.localeCompare(b.name));
     return { subject: quiz.title, accent: quiz.accent, leader: results[0], attempts: results.length };
@@ -55,7 +60,7 @@ export default function LiveWall() {
     {!projectorMode && <EventHeader compact />}
     <main className={`container live-main${projectorMode ? " live-main--projector" : ""}`}>
       <section className="live-intro">
-        <div><p className="eyebrow"><Radio size={14} />{projectorMode ? "PROJECTOR DISPLAY" : "LIVE CLASSROOM FEED"}{eventSection ? ` · ${eventSection.toUpperCase()} SECTION` : ""}</p><h1>{projectorMode ? <>Celebrate the <em>learning.</em></> : <>Results, <em>in the moment.</em></>}</h1><p>{projectorMode ? `Live ICT studio results from the ${eventSection ? `${eventSection} ` : ""}section of The First Academy School ICT Welcome Day.` : `Celebrate every ICT studio completed across the ${eventSection ? `${eventSection} ` : ""}TFA Welcome Day.`}</p></div>
+        <div><p className="eyebrow"><Radio size={14} />{projectorMode ? "PROJECTOR DISPLAY" : "LIVE CLASSROOM FEED"}{classLabel ? ` · ${classLabel.toUpperCase()}` : eventSection ? ` · ${eventSection.toUpperCase()} SECTION` : ""}</p><h1>{projectorMode ? <>Celebrate the <em>learning.</em></> : <>Results, <em>in the moment.</em></>}</h1><p>{projectorMode ? `Live ICT studio results from ${classLabel ?? `the ${eventSection ? `${eventSection} ` : ""}section`} of The First Academy School ICT Welcome Day.` : `Celebrate every ICT studio completed across ${classLabel ?? `the ${eventSection ? `${eventSection} ` : ""}TFA Welcome Day.`}`}</p></div>
         <div className="projector-actions">{projectorMode ? <Button variant="outline" onClick={closeProjector}><Minimize2 size={16} />Exit projector</Button> : <><Button variant="outline" onClick={() => setLocation("/")}><ArrowLeft size={16} />Back to subjects</Button>{isAdmin && <Button className="projector-button" onClick={openProjector}><Maximize2 size={16} />Projector mode</Button>}</>}</div>
       </section>
       {board.isLoading ? <div className="live-loading"><span /><p>Opening the live board…</p></div> : <>

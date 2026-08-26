@@ -16,6 +16,7 @@ import {
   getStaffOverview,
   getSubjectResultsExport,
   listActivities,
+  listClassGroups,
   moderateSubmission,
   resetSubjectResults,
   setParticipantVisibility,
@@ -54,10 +55,12 @@ export const appRouter = router({
   }),
   event: router({
     activities: publicProcedure.query(() => listActivities()),
+    classGroups: publicProcedure.input(z.object({ eventSection: z.enum(["boys", "girls"]).optional() }).optional()).query(({ input }) => listClassGroups(input?.eventSection)),
     join: publicProcedure.input(z.object({
       displayName: z.string().trim().min(2, "Please enter at least 2 characters.").max(80),
       gradeBand: z.enum(["6-7", "8-9", "10-12"]),
       eventSection: z.enum(["boys", "girls"]),
+      classGroupId: z.number().int().positive(),
     })).mutation(({ input }) => createParticipant(input)),
     passport: publicProcedure.input(z.object({ accessCode: passportCode })).query(({ input }) => getPassport(input.accessCode)),
     quizSession: publicProcedure.input(z.object({ accessCode: passportCode, activitySlug })).query(({ input }) => startQuizSession(input)),
@@ -100,7 +103,7 @@ export const appRouter = router({
       optionText: z.string().trim().min(2).max(160),
       promptKey: z.enum(["future-tech", "timetable-pulse", "elective-pulse"]).optional(),
     })).mutation(({ input }) => castVote(input)),
-    liveBoard: publicProcedure.input(z.object({ eventSection: z.enum(["boys", "girls"]).optional() }).optional()).query(({ input }) => getLiveBoard(input?.eventSection)),
+    liveBoard: publicProcedure.input(z.object({ eventSection: z.enum(["boys", "girls"]).optional(), classGroupId: z.number().int().positive().optional() }).optional()).query(({ input }) => getLiveBoard(input?.eventSection, input?.classGroupId)),
   }),
   staff: router({
     overview: staffProcedure.query(({ ctx }) => getStaffOverview(ctx.user.staffSection)),
