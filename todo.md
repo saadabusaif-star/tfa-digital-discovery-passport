@@ -68,7 +68,7 @@
 - [x] Persist completed subject-quiz scores and display student names and results on the live board.
 - [x] Simplify the landing page, quiz pop-up, passport, and live wall around the new subject-quiz model.
 - [x] Test all five subject quizzes and the named result publication flow.
-- [ ] Save a checkpoint for the simplified subject-quiz platform.
+- [x] Save a checkpoint for the simplified subject-quiz platform.
 - [x] Clear stale unavailable passport codes so students can always restart the subject-quiz flow.
 - [x] Fix named subject-result retrieval on the live board and verify a completed quiz appears by student name.
 - [x] Show completion status only on the specific subject a student has finished.
