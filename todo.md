@@ -144,4 +144,4 @@
 - [x] Redesign section bars, headings, and responsive font sizing so student activities are easier to scan and use on touch devices.
 - [x] Make activity-shortcut activation visibly immediate, with an in-page destination indicator or focused section state that does not require students to infer the scroll result.
 - [x] Replace the long welcome overlay with concise, helpful entry guidance that does not obstruct the first activity unnecessarily.
-- [ ] Verify reordered activity navigation, visible shortcut feedback, overlay behavior, and desktop plus 390×844 mobile presentation before saving a new checkpoint.
+- [x] Verify reordered activity navigation, visible shortcut feedback, overlay behavior, and desktop plus 390×844 mobile presentation before saving a new checkpoint.
