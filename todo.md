@@ -172,3 +172,7 @@
 - [x] Add a protected teacher class launcher that selects one assigned class and produces a shareable QR-link session.
 - [x] Auto-assign students scanning a teacher class link to that class while still asking only for their name and grade group.
 - [x] Verify the student QR join view is short, touch-friendly, and never reveals teacher or other-class data.
+
+- [ ] Add a clearly visible QR code to the public join panel so visitors can scan it directly.
+- [x] Redesign the desktop and phone join-panel width and height so the hero has balanced content rather than a large empty dark area.
+- [ ] Verify visible QR scanning guidance and the corrected responsive hero dimensions before saving a new checkpoint.
