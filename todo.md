@@ -76,4 +76,7 @@
 - [x] Complete Mathematics, STEM, PE, and Geography quiz flows end to end and verify their named live-board results.
 - [x] Replace the current visual theme, typography, colours, and page structure with a modern school-event interface rather than an e-commerce-style layout.
 - [x] Redesign the student quiz, passport, and live-board pages for responsive phone, tablet, laptop, and large-display use.
-- [ ] Verify the redesigned interface preserves five-subject quiz scoring and named live results, then save a new checkpoint.
+- [x] Verify the redesigned interface preserves five-subject quiz scoring and named live results, then save a new checkpoint.
+- [x] Complete one post-redesign subject quiz in the browser and confirm its success panel, learning record, and named live-board row.
+- [x] Verify one complete post-redesign subject flow at a responsive tablet or phone breakpoint, remove temporary QA data, and save the final checkpoint.
+- [x] Restore active subject catalog records so completed subject IDs resolve correctly in the home and personal-record interfaces.

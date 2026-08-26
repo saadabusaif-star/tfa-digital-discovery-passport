@@ -303,8 +303,9 @@ export async function ensureEventCatalog() {
   const db = await requireDb();
   await db.update(activities).set({ isActive: 0, updatedAt: new Date() });
   for (const activity of SUBJECT_QUIZ_CATALOG) {
-    await db.insert(activities).values(activity).onDuplicateKeyUpdate({
-      set: { ...activity, updatedAt: new Date() },
+    const activeSubject = { ...activity, isActive: 1 };
+    await db.insert(activities).values(activeSubject).onDuplicateKeyUpdate({
+      set: { ...activeSubject, updatedAt: new Date() },
     });
   }
 }
