@@ -11,6 +11,7 @@ import {
   getLiveBoard,
   getModerationQueue,
   getPassport,
+  startQuizSession,
   getStaffOverview,
   getSubjectResultsExport,
   listActivities,
@@ -55,10 +56,12 @@ export const appRouter = router({
       gradeBand: z.enum(["6-7", "8-9", "10-12"]),
     })).mutation(({ input }) => createParticipant(input)),
     passport: publicProcedure.input(z.object({ accessCode: passportCode })).query(({ input }) => getPassport(input.accessCode)),
+    quizSession: publicProcedure.input(z.object({ accessCode: passportCode, activitySlug })).query(({ input }) => startQuizSession(input)),
     complete: publicProcedure.input(z.object({
       accessCode: passportCode,
       activitySlug,
-      responseText: z.string().trim().max(500).optional(),
+      responseText: z.string().trim().max(2000).optional(),
+      sessionToken: z.string().trim().min(12).max(40).optional(),
     })).mutation(({ input }) => completeActivity(input)),
     submit: publicProcedure.input(z.object({
       accessCode: passportCode,

@@ -6,7 +6,7 @@ export type SubjectQuestion = {
 };
 
 export type SubjectQuiz = {
-  slug: "science-quiz" | "mathematics-quiz" | "stem-quiz" | "pe-quiz" | "geography-quiz" | "ict-display-challenge";
+  slug: "science-quiz" | "mathematics-quiz" | "stem-quiz" | "pe-quiz" | "geography-quiz" | "ict-display-challenge" | "digital-technology-or-not";
   title: string;
   icon: string;
   accent: "blue" | "violet" | "mint" | "coral" | "gold";
@@ -53,4 +53,13 @@ export const ICT_DISPLAY_CHALLENGE: SubjectQuiz = {
     { level: "Medium", prompt: "Which shortcut on the supplied keyboard display creates a new document?", options: ["A) Ctrl + W", "B) Ctrl + O", "C) Ctrl + N", "D) Ctrl + P"], answer: "C) Ctrl + N" },
     { level: "Hard", prompt: "The Computing banner includes a student using a headset to explore a digital world. What technology is shown?", options: ["A) A printer", "B) Virtual reality (VR)", "C) A spreadsheet", "D) A keyboard shortcut"], answer: "B) Virtual reality (VR)" },
   ],
+};
+
+export const DIGITAL_TECHNOLOGY_CHALLENGE: SubjectQuiz = {
+  slug: "digital-technology-or-not",
+  title: "Digital Technology or Not?",
+  icon: "?",
+  accent: "mint",
+  summary: "Use the supplied presentation to spot technology, information, and everyday objects.",
+  questions: [],
 };

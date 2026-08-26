@@ -104,3 +104,28 @@
 - [x] Repair and verify the Discovery Lab, Subjects, My record, and Live board navigation links and click behavior.
 - [x] Replace the current student introduction with clearer, more useful UAE-focused Welcome Day guidance.
 - [x] Verify the reordered UAE-focused student experience on desktop and 390×844 mobile, then save an updated checkpoint.
+
+- [x] Review and integrate the supplied Digital Technology or Not presentation as a visible Welcome Day quiz activity and question source.
+- [x] Replace static quiz delivery with grade-aware randomized question-bank selection while preserving each participant’s submitted-answer scoring.
+- [x] Add age-appropriate question-bank coverage for Grades 6–7, 8–9, and 10–12 across the five core subjects and presentation-based activity.
+- [x] Rewrite the live-board callout so students clearly understand that a completed challenge publishes their name, score, and points.
+- [ ] Test random question selection, grade-aware scoring, presentation activity, record persistence, and live-board messaging on desktop and 390×844 mobile, then save an updated checkpoint.
+
+- [x] Replace the student header with the requested official bilingual Ajman and TFA identity, UAE flag, and school website link.
+- [ ] Verify the official header’s links, bilingual readability, and responsive desktop and 390×844 mobile layout, then include it in the next checkpoint.
+
+- [x] Add the requested ICT Department footer badge with the friendly learning-and-growth message and verify it is readable on desktop and mobile.
+
+- [x] Match the supplied official bilingual Ajman authority text exactly, including the full Arabic authority line.
+- [ ] Replace the current header logo with the user-supplied official white school logo, or document a verified source-access blocker.
+
+- [x] Review all newly supplied ICT posters, booklets, rules, shortcut displays, and presentation resources for safe grade-appropriate question-bank concepts.
+- [x] Expand each grade-aware activity pool so students receive non-repeating, non-similar questions drawn from a substantially broader set of supplied-resource concepts.
+- [x] Use every supplied resource visibly or conceptually in the student-facing Welcome Day experience without adding local document assets to the web project.
+- [ ] Test question-route uniqueness, grade coverage, resource linkage, persistence, and desktop plus 390×844 mobile presentation before checkpointing.
+
+- [ ] Expand every activity and grade pool to school-scale capacity so many students receive fresh routes before any question fallback is needed.
+- [ ] Add many-successive-route uniqueness tests for every activity and grade band, including explicit exhaustion behavior.
+
+- [x] Complete an explicit 390×844 mobile randomized Digital Technology quiz through success, record, live-board publication, and targeted QA cleanup.
+- [ ] Document the official white-logo source-access blocker in the header deliverable and save a checkpoint after final validation.

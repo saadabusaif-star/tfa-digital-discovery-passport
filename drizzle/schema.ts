@@ -67,6 +67,18 @@ export const completions = mysqlTable("completions", {
   uniqueIndex("completions_participant_activity_unique").on(table.participantId, table.activityId),
 ]);
 
+export const quizSessions = mysqlTable("quiz_sessions", {
+  id: int("id").autoincrement().primaryKey(),
+  sessionToken: varchar("sessionToken", { length: 40 }).notNull().unique(),
+  participantId: int("participantId").notNull(),
+  activityId: int("activityId").notNull(),
+  questionIdsJson: text("questionIdsJson").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  completedAt: timestamp("completedAt"),
+}, table => [
+  uniqueIndex("quiz_sessions_participant_activity_unique").on(table.participantId, table.activityId),
+]);
+
 export const submissions = mysqlTable("submissions", {
   id: int("id").autoincrement().primaryKey(),
   participantId: int("participantId").notNull(),
@@ -104,5 +116,6 @@ export const eventSettings = mysqlTable("event_settings", {
 export type Participant = typeof participants.$inferSelect;
 export type Activity = typeof activities.$inferSelect;
 export type Completion = typeof completions.$inferSelect;
+export type QuizSession = typeof quizSessions.$inferSelect;
 export type Submission = typeof submissions.$inferSelect;
 export type Vote = typeof votes.$inferSelect;

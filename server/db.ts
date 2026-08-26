@@ -7,16 +7,19 @@ import {
   eventSettings,
   InsertUser,
   participants,
+  quizSessions,
   submissions,
   users,
   votes,
 } from "../drizzle/schema";
 import { ENV } from "./_core/env";
 import { canAwardCompletion, summarizePassport } from "./passportSummary";
+import { getQuestionRoute, QUIZ_ACTIVITY_SLUGS, resolveQuestionRoute, toPublicQuestions, type GradeBand, type QuizActivitySlug } from "../shared/quizQuestionBank";
 
 let _db: ReturnType<typeof drizzle> | null = null;
 
 const createAccessCode = customAlphabet("ABCDEFGHJKLMNPQRSTUVWXYZ23456789", 6);
+const createQuizSessionToken = customAlphabet("ABCDEFGHJKLMNPQRSTUVWXYZ23456789", 18);
 
 const EVENT_ACTIVITY_CATALOG = [
   {
@@ -223,16 +226,8 @@ const SUBJECT_QUIZ_CATALOG = [
   { slug: "pe-quiz", title: "Physical Education", zone: "connect" as const, kind: "quiz" as const, summary: "Think about football, fitness, and staying ready to move.", instructions: "Answer three questions: easy, medium, and hard.", resourceUrl: null, resourceLabel: null, points: 30, badgeKey: "active-ace", badgeName: "Active Ace", gradeHint: "Easy · Medium · Hard", displayOrder: 4 },
   { slug: "geography-quiz", title: "Geography", zone: "discover" as const, kind: "quiz" as const, summary: "Travel through continents, oceans, and the world map.", instructions: "Answer three questions: easy, medium, and hard.", resourceUrl: null, resourceLabel: null, points: 30, badgeKey: "world-wise", badgeName: "World Wise", gradeHint: "Easy · Medium · Hard", displayOrder: 5 },
   { slug: "ict-display-challenge", title: "ICT Display Quest", zone: "play" as const, kind: "quiz" as const, summary: "A poster-inspired bonus challenge using ICT, Computing, and keyboard-shortcut display clues.", instructions: "Use the three classroom displays to answer three quick ICT questions.", resourceUrl: null, resourceLabel: null, points: 30, badgeKey: "display-detective", badgeName: "Display Detective", gradeHint: "Poster challenge · 3 quick questions", displayOrder: 6 },
+  { slug: "digital-technology-or-not", title: "Digital Technology or Not?", zone: "play" as const, kind: "quiz" as const, summary: "Use the classroom presentation clues to sort digital tools, information, and everyday objects.", instructions: "Answer a fresh three-question technology route chosen for your grade band.", resourceUrl: null, resourceLabel: null, points: 30, badgeKey: "tech-spotter", badgeName: "Tech Spotter", gradeHint: "Presentation challenge · 3 quick questions", displayOrder: 7 },
 ];
-
-const SUBJECT_QUIZ_ANSWERS: Record<string, string[]> = {
-  "science-quiz": ["B) Earth", "B) Oxygen", "C) Photosynthesis"],
-  "mathematics-quiz": ["B) 56", "C) 50", "B) 5"],
-  "stem-quiz": ["A) Central Processing Unit", "C) SSD", "B) A step-by-step solution to a problem"],
-  "pe-quiz": ["C) 11", "A) Running", "B) To prepare the body and reduce injury risk"],
-  "geography-quiz": ["C) Asia", "D) Pacific Ocean", "D) Russia"],
-  "ict-display-challenge": ["A) Sharing information and connecting digitally", "C) Ctrl + N", "B) Virtual reality (VR)"],
-};
 
 export const LIVE_POLL_PROMPTS = [
   { key: "future-tech", eyebrow: "Future Tech Vote", title: "Skills students want", question: "Which ICT skill would you most like to develop this year?" },
@@ -357,22 +352,66 @@ export async function getPassport(accessCode: string) {
   return { participant, completions: completionRows, ...summary };
 }
 
-export async function completeActivity(input: { accessCode: string; activitySlug: string; responseText?: string }) {
+export async function startQuizSession(input: { accessCode: string; activitySlug: string }) {
+  const db = await requireDb();
+  const participant = await getParticipantByCode(input.accessCode);
+  const activity = await db.select().from(activities).where(eq(activities.slug, input.activitySlug)).limit(1);
+  if (!activity[0] || !QUIZ_ACTIVITY_SLUGS.includes(activity[0].slug as QuizActivitySlug)) throw new Error("This quiz is not available.");
+  const existing = await db.select().from(quizSessions).where(and(eq(quizSessions.participantId, participant.id), eq(quizSessions.activityId, activity[0].id))).limit(1);
+  let session = existing[0];
+  if (!session) {
+    const issuedSessions = await db.select({ questionIdsJson: quizSessions.questionIdsJson }).from(quizSessions).where(eq(quizSessions.activityId, activity[0].id));
+    const issuedQuestionIds = issuedSessions.flatMap(({ questionIdsJson }) => {
+      try {
+        const parsed: unknown = JSON.parse(questionIdsJson);
+        return Array.isArray(parsed) ? parsed.filter((id): id is string => typeof id === "string") : [];
+      } catch {
+        return [];
+      }
+    });
+    const questions = getQuestionRoute(activity[0].slug as QuizActivitySlug, participant.gradeBand as GradeBand, Math.random, issuedQuestionIds);
+    await db.insert(quizSessions).values({
+      sessionToken: createQuizSessionToken(),
+      participantId: participant.id,
+      activityId: activity[0].id,
+      questionIdsJson: JSON.stringify(questions.map(question => question.id)),
+    });
+    const created = await db.select().from(quizSessions).where(and(eq(quizSessions.participantId, participant.id), eq(quizSessions.activityId, activity[0].id))).limit(1);
+    session = created[0];
+  }
+  if (!session) throw new Error("Your quiz route could not be prepared. Please try again.");
+  let questionIds: unknown;
+  try { questionIds = JSON.parse(session.questionIdsJson); } catch { throw new Error("Your quiz route could not be read. Please reopen the activity."); }
+  if (!Array.isArray(questionIds) || !questionIds.every(id => typeof id === "string")) throw new Error("Your quiz route could not be read. Please reopen the activity.");
+  const questions = resolveQuestionRoute(activity[0].slug as QuizActivitySlug, participant.gradeBand as GradeBand, questionIds);
+  return { sessionToken: session.sessionToken, activitySlug: activity[0].slug, title: activity[0].title, questionCount: questions.length, questions: toPublicQuestions(questions) };
+}
+
+export async function completeActivity(input: { accessCode: string; activitySlug: string; responseText?: string; sessionToken?: string }) {
   const db = await requireDb();
   const participant = await getParticipantByCode(input.accessCode);
   const activity = await db.select().from(activities).where(eq(activities.slug, input.activitySlug)).limit(1);
   if (!activity[0]) throw new Error("Activity not found.");
-  const expectedAnswers = SUBJECT_QUIZ_ANSWERS[activity[0].slug];
   let quizScore: number | undefined;
   let awardedPoints = activity[0].points;
-  if (expectedAnswers) {
-    let submittedAnswers: unknown;
-    try { submittedAnswers = JSON.parse(input.responseText ?? "[]"); } catch { throw new Error("Please complete all three quiz questions before submitting."); }
-    if (!Array.isArray(submittedAnswers) || submittedAnswers.length !== expectedAnswers.length || !submittedAnswers.every(answer => typeof answer === "string")) {
+  let storedResponseText = input.responseText?.trim() || null;
+  if (QUIZ_ACTIVITY_SLUGS.includes(activity[0].slug as QuizActivitySlug)) {
+    if (!input.sessionToken) throw new Error("Please reopen this quiz to load your question route.");
+    const session = await db.select().from(quizSessions).where(eq(quizSessions.sessionToken, input.sessionToken)).limit(1);
+    if (!session[0] || session[0].participantId !== participant.id || session[0].activityId !== activity[0].id) throw new Error("This quiz route does not belong to your passport. Please reopen the activity.");
+    let response: { questionIds?: unknown; answers?: unknown };
+    let questionIds: unknown;
+    try {
+      response = JSON.parse(input.responseText ?? "{}");
+      questionIds = JSON.parse(session[0].questionIdsJson);
+    } catch { throw new Error("Please complete all three quiz questions before submitting."); }
+    if (!Array.isArray(response.answers) || response.answers.length !== 3 || !response.answers.every(answer => typeof answer === "string") || !Array.isArray(response.questionIds) || !Array.isArray(questionIds) || response.questionIds.join("|") !== questionIds.join("|")) {
       throw new Error("Please complete all three quiz questions before submitting.");
     }
-    quizScore = submittedAnswers.reduce((score, answer, index) => score + (answer === expectedAnswers[index] ? 1 : 0), 0);
+    const questions = resolveQuestionRoute(activity[0].slug as QuizActivitySlug, participant.gradeBand as GradeBand, questionIds as string[]);
+    quizScore = response.answers.reduce((score, answer, index) => score + (answer === questions[index]?.answer ? 1 : 0), 0);
     awardedPoints = quizScore * 10;
+    storedResponseText = JSON.stringify({ questionIds, answers: response.answers });
   } else {
     const correctAnswer = VALIDATED_ACTIVITY_ANSWERS[activity[0].slug];
     if (correctAnswer && input.responseText?.trim() !== correctAnswer) throw new Error("That answer is not quite right. Review the challenge and try again.");
@@ -382,10 +421,11 @@ export async function completeActivity(input: { accessCode: string; activitySlug
   await db.insert(completions).values({
     participantId: participant.id,
     activityId: activity[0].id,
-    responseText: input.responseText?.trim() || null,
+    responseText: storedResponseText,
     awardedPoints,
   });
-  return { alreadyCompleted: false, pointsAdded: awardedPoints, quizScore, questionCount: expectedAnswers?.length, activity: activity[0] };
+  if (input.sessionToken && QUIZ_ACTIVITY_SLUGS.includes(activity[0].slug as QuizActivitySlug)) await db.update(quizSessions).set({ completedAt: new Date() }).where(eq(quizSessions.sessionToken, input.sessionToken));
+  return { alreadyCompleted: false, pointsAdded: awardedPoints, quizScore, questionCount: quizScore === undefined ? undefined : 3, activity: activity[0] };
 }
 
 export async function createCreativeSubmission(input: {
@@ -471,12 +511,9 @@ export async function getLiveBoard() {
   };
   const totalPoints = visibleCompletions.reduce((sum, completion) => sum + completion.awardedPoints, 0);
   const subjectResults = subjectCompletionRows.map(row => {
-    const expectedAnswers = SUBJECT_QUIZ_ANSWERS[row.activity.slug];
-    if (!expectedAnswers) return undefined;
-    let answers: unknown;
-    try { answers = JSON.parse(row.completion.responseText ?? "[]"); } catch { answers = []; }
-    const score = Array.isArray(answers) ? answers.reduce((total, answer, index) => total + (answer === expectedAnswers[index] ? 1 : 0), 0) : 0;
-    return { participantId: row.completion.participantId, subject: row.activity.title, score, questionCount: expectedAnswers.length, points: row.completion.awardedPoints, completedAt: row.completion.completedAt, name: row.displayName };
+    if (!QUIZ_ACTIVITY_SLUGS.includes(row.activity.slug as QuizActivitySlug)) return undefined;
+    const score = Math.max(0, Math.min(3, Math.round(row.completion.awardedPoints / 10)));
+    return { participantId: row.completion.participantId, subject: row.activity.title, score, questionCount: 3, points: row.completion.awardedPoints, completedAt: row.completion.completedAt, name: row.displayName };
   }).filter((item): item is NonNullable<typeof item> => Boolean(item)).sort((a, b) => b.score - a.score || b.points - a.points).slice(0, 12);
   return {
     participants: participantScores,
@@ -576,7 +613,7 @@ export async function getSubjectResultsExport() {
     .from(completions)
     .innerJoin(participants, eq(completions.participantId, participants.id))
     .innerJoin(activities, eq(completions.activityId, activities.id))
-    .where(inArray(activities.slug, Object.keys(SUBJECT_QUIZ_ANSWERS)))
+    .where(inArray(activities.slug, QUIZ_ACTIVITY_SLUGS))
     .orderBy(desc(completions.completedAt));
 
   return rows.map(row => ({
@@ -597,5 +634,6 @@ export async function resetSubjectResults() {
 
   const existing = await db.select({ id: completions.id }).from(completions).where(inArray(completions.activityId, subjectIds));
   if (existing.length) await db.delete(completions).where(inArray(completions.activityId, subjectIds));
+  await db.delete(quizSessions).where(inArray(quizSessions.activityId, subjectIds));
   return { cleared: existing.length };
 }
