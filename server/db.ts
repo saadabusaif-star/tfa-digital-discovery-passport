@@ -528,11 +528,11 @@ export async function castVote(input: { accessCode: string; optionText: string; 
   });
 }
 
-export async function getLiveBoard(eventSection?: "boys" | "girls", classGroupId?: number) {
+export async function getLiveBoard(eventSection?: "boys" | "girls", classGroupId?: number, classLabel?: string) {
   await ensureClassGroups();
   const db = await requireDb();
   const [participantRows, completionRows, activityRows, approvedSubmissions, voteRows, subjectCompletionRows] = await Promise.all([
-    db.select().from(participants).where(classGroupId ? and(eq(participants.isActive, 1), eq(participants.classGroupId, classGroupId)) : eventSection ? and(eq(participants.isActive, 1), eq(participants.eventSection, eventSection)) : eq(participants.isActive, 1)),
+    db.select().from(participants).where(classLabel ? and(eq(participants.isActive, 1), eq(participants.classLabel, classLabel)) : classGroupId ? and(eq(participants.isActive, 1), eq(participants.classGroupId, classGroupId)) : eventSection ? and(eq(participants.isActive, 1), eq(participants.eventSection, eventSection)) : eq(participants.isActive, 1)),
     db.select().from(completions),
     listActivities(),
     db.select({ submission: submissions, displayName: participants.displayName, activityTitle: activities.title })
@@ -546,7 +546,7 @@ export async function getLiveBoard(eventSection?: "boys" | "girls", classGroupId
       .from(completions)
       .innerJoin(activities, eq(completions.activityId, activities.id))
       .innerJoin(participants, eq(completions.participantId, participants.id))
-      .where(classGroupId ? and(eq(participants.isActive, 1), eq(participants.classGroupId, classGroupId)) : eventSection ? and(eq(participants.isActive, 1), eq(participants.eventSection, eventSection)) : eq(participants.isActive, 1)),
+      .where(classLabel ? and(eq(participants.isActive, 1), eq(participants.classLabel, classLabel)) : classGroupId ? and(eq(participants.isActive, 1), eq(participants.classGroupId, classGroupId)) : eventSection ? and(eq(participants.isActive, 1), eq(participants.eventSection, eventSection)) : eq(participants.isActive, 1)),
   ]);
   const visibleParticipantIds = participantRows.map(participant => participant.id);
   const visibleCompletions = completionRows.filter(item => visibleParticipantIds.includes(item.participantId));
@@ -582,6 +582,7 @@ export async function getLiveBoard(eventSection?: "boys" | "girls", classGroupId
     participants: participantScores,
     eventSection: eventSection ?? "all",
     classGroupId: classGroupId ?? null,
+    classLabel: classLabel ?? null,
     classGroup: classGroup ? { id: classGroup.id, label: classGroup.label, teacherSlot: classGroup.teacherSlot } : null,
     totals: { participantCount: participantRows.length, completionCount: visibleCompletions.length, totalPoints, activityCount: activityRows.length },
     votes: votesForPrompt("future-tech"),
@@ -651,6 +652,7 @@ export async function getStaffOverview(staffSection: "boys" | "girls" | "all" = 
         displayName: participant.displayName,
         gradeBand: participant.gradeBand,
         eventSection: participant.eventSection,
+        classLabel: participant.classLabel,
         isActive: participant.isActive,
         completedCount: personCompletions.length,
         totalPoints: personCompletions.reduce((sum, completion) => sum + completion.awardedPoints, 0),

@@ -183,4 +183,4 @@
 - [ ] Verify the simplified teacher/class organisation, student record separation, and live-board grouping on desktop and phone.
 
 - [x] Add a visible Section and class text field that accepts entries such as Boy 7F, then store the normalized value with the student record.
-- [ ] Group staff records and class live-board views by the saved Boy/Girl plus class value, without teacher or class dropdown lists for students.
+- [x] Group staff records and class live-board views by the saved Boy/Girl plus class value, without teacher or class dropdown lists for students.

@@ -101,7 +101,7 @@ export const appRouter = router({
       optionText: z.string().trim().min(2).max(160),
       promptKey: z.enum(["future-tech", "timetable-pulse", "elective-pulse"]).optional(),
     })).mutation(({ input }) => castVote(input)),
-    liveBoard: publicProcedure.input(z.object({ eventSection: z.enum(["boys", "girls"]).optional(), classGroupId: z.number().int().positive().optional() }).optional()).query(({ input }) => getLiveBoard(input?.eventSection, input?.classGroupId)),
+    liveBoard: publicProcedure.input(z.object({ eventSection: z.enum(["boys", "girls"]).optional(), classGroupId: z.number().int().positive().optional(), classLabel: z.string().trim().max(40).optional() }).optional()).query(({ input }) => getLiveBoard(input?.eventSection, input?.classGroupId, input?.classLabel)),
   }),
   staff: router({
     overview: staffProcedure.query(({ ctx }) => getStaffOverview(ctx.user.staffSection)),
