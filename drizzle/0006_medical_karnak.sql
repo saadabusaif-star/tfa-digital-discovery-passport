@@ -1,0 +1,1 @@
+ALTER TABLE `participants` ADD `classLabel` varchar(40);

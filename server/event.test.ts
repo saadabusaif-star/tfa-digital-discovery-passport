@@ -46,19 +46,19 @@ function createContext(role: "admin" | "teacher" | "user" | null = null, staffSe
 describe("Digital Discovery Passport event procedures", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    dbMocks.createParticipant.mockResolvedValue({ id: 1, displayName: "Byte Builders", gradeBand: "6-7", eventSection: "boys", classGroupId: 1, accessCode: "TFA-ABC123" });
+    dbMocks.createParticipant.mockResolvedValue({ id: 1, displayName: "Byte Builders", gradeBand: "6-7", eventSection: "boys", classLabel: "Boy 7F", accessCode: "TFA-ABC123" });
     dbMocks.completeActivity.mockResolvedValue({ alreadyCompleted: false, pointsAdded: 15, activity: { slug: "code-breaker" } });
     dbMocks.getLiveBoard.mockResolvedValue({ totals: { participantCount: 0, completionCount: 0, totalPoints: 0, activityCount: 9 }, participants: [], votes: [], words: [], recentWork: [] });
     dbMocks.getSubjectResultsExport.mockResolvedValue([{ name: "Amina", gradeBand: "8-9", eventSection: "girls", subject: "ICT Display Quest", score: 3, points: 30, completedAt: new Date() }]);
     dbMocks.resetSubjectResults.mockResolvedValue({ cleared: 1 });
   });
 
-  it("creates a participant passport only with a valid display name, grade band, and event section", async () => {
+  it("creates a participant passport only with a valid display name, grade band, and section and class", async () => {
     const caller = appRouter.createCaller(createContext());
-    const result = await caller.event.join({ displayName: "Byte Builders", gradeBand: "6-7", eventSection: "boys", classGroupId: 1 });
+    const result = await caller.event.join({ displayName: "Byte Builders", gradeBand: "6-7", classLabel: "Boy 7F" });
     expect(result.accessCode).toBe("TFA-ABC123");
-    expect(dbMocks.createParticipant).toHaveBeenCalledWith({ displayName: "Byte Builders", gradeBand: "6-7", eventSection: "boys", classGroupId: 1 });
-    await expect(caller.event.join({ displayName: "A", gradeBand: "6-7", eventSection: "boys", classGroupId: 1 })).rejects.toThrow();
+    expect(dbMocks.createParticipant).toHaveBeenCalledWith({ displayName: "Byte Builders", gradeBand: "6-7", classLabel: "Boy 7F" });
+    await expect(caller.event.join({ displayName: "A", gradeBand: "6-7", classLabel: "Boy 7F" })).rejects.toThrow();
   });
 
   it("records a safe activity completion against a formatted passport code", async () => {

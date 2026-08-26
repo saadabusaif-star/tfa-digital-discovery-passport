@@ -173,6 +173,14 @@
 - [x] Auto-assign students scanning a teacher class link to that class while still asking only for their name and grade group.
 - [x] Verify the student QR join view is short, touch-friendly, and never reveals teacher or other-class data.
 
-- [ ] Add a clearly visible QR code to the public join panel so visitors can scan it directly.
+- [x] Add a clearly visible QR code to the public join panel so visitors can scan it directly. Reversed at the user’s request in favor of direct Boy 7F entry.
 - [x] Redesign the desktop and phone join-panel width and height so the hero has balanced content rather than a large empty dark area.
-- [ ] Verify visible QR scanning guidance and the corrected responsive hero dimensions before saving a new checkpoint.
+- [x] Verify visible QR scanning guidance and the corrected responsive hero dimensions before saving a new checkpoint. QR guidance was then removed at the user’s request.
+
+- [x] Remove the QR session, QR dependency, teacher QR launcher, and QR-specific public instructions added in the latest revision.
+- [ ] Replace the teacher-login/QR workflow with a simple visible Teacher → Class organisation view for staff management.
+- [x] Restore a clear, compact student class-joining flow without exposing long teacher/class lists or requiring a QR scan.
+- [ ] Verify the simplified teacher/class organisation, student record separation, and live-board grouping on desktop and phone.
+
+- [x] Add a visible Section and class text field that accepts entries such as Boy 7F, then store the normalized value with the student record.
+- [ ] Group staff records and class live-board views by the saved Boy/Girl plus class value, without teacher or class dropdown lists for students.

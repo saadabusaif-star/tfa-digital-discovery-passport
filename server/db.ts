@@ -363,10 +363,17 @@ export async function getClassSession(classGroupId: number) {
   return classGroup[0];
 }
 
-export async function createParticipant(input: { displayName: string; gradeBand: "6-7" | "8-9" | "10-12"; eventSection: "boys" | "girls"; classGroupId: number }) {
+function normalizeClassLabel(value: string) {
+  const match = value.trim().replace(/\s+/g, " ").match(/^(boy|boys|girl|girls)\s+(6|7|8|9|10|11|12)\s*([a-z])$/i);
+  if (!match) throw new Error("Enter your section and class like Boy 7F or Girl 10A.");
+  const eventSection = match[1].toLowerCase().startsWith("boy") ? "boys" as const : "girls" as const;
+  const classLabel = `${eventSection === "boys" ? "Boy" : "Girl"} ${match[2]}${match[3].toUpperCase()}`;
+  return { eventSection, classLabel };
+}
+
+export async function createParticipant(input: { displayName: string; gradeBand: "6-7" | "8-9" | "10-12"; classLabel: string }) {
   const db = await requireDb();
-  const classGroup = await db.select().from(classGroups).where(and(eq(classGroups.id, input.classGroupId), eq(classGroups.isActive, 1))).limit(1);
-  if (!classGroup[0] || classGroup[0].eventSection !== input.eventSection) throw new Error("Choose an active class from your selected Welcome Day section.");
+  const { eventSection, classLabel } = normalizeClassLabel(input.classLabel);
   const palette = ["gold", "coral", "teal", "violet"];
   for (let attempt = 0; attempt < 4; attempt += 1) {
     const accessCode = `TFA-${createAccessCode()}`;
@@ -374,8 +381,8 @@ export async function createParticipant(input: { displayName: string; gradeBand:
       await db.insert(participants).values({
         displayName: input.displayName.trim(),
         gradeBand: input.gradeBand,
-        eventSection: input.eventSection,
-        classGroupId: input.classGroupId,
+        eventSection,
+        classLabel,
         accessCode,
         avatarColor: palette[Math.floor(Math.random() * palette.length)] ?? "gold",
       });

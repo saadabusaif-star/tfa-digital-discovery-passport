@@ -31,6 +31,7 @@ export const participants = mysqlTable("participants", {
   displayName: varchar("displayName", { length: 80 }).notNull(),
   gradeBand: mysqlEnum("gradeBand", ["6-7", "8-9", "10-12"]).notNull(),
   eventSection: mysqlEnum("eventSection", ["boys", "girls", "unassigned"]).default("unassigned").notNull(),
+  classLabel: varchar("classLabel", { length: 40 }),
   classGroupId: int("classGroupId"),
   accessCode: varchar("accessCode", { length: 16 }).notNull().unique(),
   avatarColor: varchar("avatarColor", { length: 24 }).default("gold").notNull(),
