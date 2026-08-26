@@ -122,7 +122,7 @@
 - [x] Review all newly supplied ICT posters, booklets, rules, shortcut displays, and presentation resources for safe grade-appropriate question-bank concepts.
 - [x] Expand each grade-aware activity pool so students receive non-repeating, non-similar questions drawn from a substantially broader set of supplied-resource concepts.
 - [x] Use every supplied resource visibly or conceptually in the student-facing Welcome Day experience without adding local document assets to the web project.
-- [ ] Test question-route uniqueness, grade coverage, resource linkage, persistence, and desktop plus 390×844 mobile presentation before checkpointing.
+- [x] Test question-route uniqueness, grade coverage, resource linkage, persistence, and desktop plus 390×844 mobile presentation before checkpointing.
 
 - [ ] Expand every activity and grade pool to school-scale capacity so many students receive fresh routes before any question fallback is needed.
 - [x] Add many-successive-route uniqueness tests for every activity and grade band, including explicit exhaustion behavior.
@@ -136,6 +136,6 @@
 - [x] Add a Boys ICT Photo Corner section with a UAE/TFA welcome-back backdrop and selectable future-tech sign ideas.
 - [x] Reorganize the student home page with labeled clickable activity shortcuts that scroll students to the correct section or open the relevant activity.
 - [x] Create cohesive colorful interactive CSS and JavaScript presentation for the new activities, matching the existing UAE/TFA school-event identity.
-- [ ] Test the new activity interactions, navigation shortcuts, and desktop plus 390×844 mobile presentation, then save an updated checkpoint.
+- [x] Test the new activity interactions, navigation shortcuts, and desktop plus 390×844 mobile presentation, then save an updated checkpoint.
 
-- [ ] Exercise activity shortcuts, Tech Wheel spin, Human-or-AI choice, Future 2040 selector, and Photo Corner sign switching on desktop and 390×844 mobile, then checkpoint the completed attraction deck.
+- [x] Exercise activity shortcuts, Tech Wheel spin, Human-or-AI choice, Future 2040 selector, and Photo Corner sign switching on desktop and 390×844 mobile, then checkpoint the completed attraction deck.
