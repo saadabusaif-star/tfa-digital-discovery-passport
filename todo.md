@@ -129,3 +129,13 @@
 
 - [x] Complete an explicit 390×844 mobile randomized Digital Technology quiz through success, record, live-board publication, and targeted QA cleanup.
 - [x] Document the official white-logo source-access blocker in the header deliverable and save a checkpoint after final validation.
+
+- [x] Add a prominent interactive Spin the Tech Wheel with age-appropriate AI, Cyber, Gaming, Coding, Robotics, Tech Trivia, and Lucky Spin challenge outcomes.
+- [x] Add a visual Human or AI? choice activity with clear real-versus-AI image guidance and instant answer feedback.
+- [x] Add a Future 2040 career selector that gives students a personalized technology-career result card.
+- [x] Add a Boys ICT Photo Corner section with a UAE/TFA welcome-back backdrop and selectable future-tech sign ideas.
+- [x] Reorganize the student home page with labeled clickable activity shortcuts that scroll students to the correct section or open the relevant activity.
+- [x] Create cohesive colorful interactive CSS and JavaScript presentation for the new activities, matching the existing UAE/TFA school-event identity.
+- [ ] Test the new activity interactions, navigation shortcuts, and desktop plus 390×844 mobile presentation, then save an updated checkpoint.
+
+- [ ] Exercise activity shortcuts, Tech Wheel spin, Human-or-AI choice, Future 2040 selector, and Photo Corner sign switching on desktop and 390×844 mobile, then checkpoint the completed attraction deck.
