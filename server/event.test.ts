@@ -24,7 +24,7 @@ const storageMocks = vi.hoisted(() => ({ storagePut: vi.fn() }));
 vi.mock("./db", () => dbMocks);
 vi.mock("./storage", () => storageMocks);
 
-function createContext(role: "admin" | "user" | null = null): TrpcContext {
+function createContext(role: "admin" | "teacher" | "user" | null = null, staffSection: "boys" | "girls" | "all" = "all"): TrpcContext {
   return {
     user: role ? {
       id: 17,
@@ -33,6 +33,7 @@ function createContext(role: "admin" | "user" | null = null): TrpcContext {
       email: "tester@example.com",
       loginMethod: "manus",
       role,
+      staffSection,
       createdAt: new Date(),
       updatedAt: new Date(),
       lastSignedIn: new Date(),
@@ -45,19 +46,19 @@ function createContext(role: "admin" | "user" | null = null): TrpcContext {
 describe("Digital Discovery Passport event procedures", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    dbMocks.createParticipant.mockResolvedValue({ id: 1, displayName: "Byte Builders", gradeBand: "6-7", accessCode: "TFA-ABC123" });
+    dbMocks.createParticipant.mockResolvedValue({ id: 1, displayName: "Byte Builders", gradeBand: "6-7", eventSection: "boys", accessCode: "TFA-ABC123" });
     dbMocks.completeActivity.mockResolvedValue({ alreadyCompleted: false, pointsAdded: 15, activity: { slug: "code-breaker" } });
     dbMocks.getLiveBoard.mockResolvedValue({ totals: { participantCount: 0, completionCount: 0, totalPoints: 0, activityCount: 9 }, participants: [], votes: [], words: [], recentWork: [] });
-    dbMocks.getSubjectResultsExport.mockResolvedValue([{ name: "Amina", gradeBand: "8-9", subject: "Science", score: 3, points: 30, completedAt: new Date() }]);
+    dbMocks.getSubjectResultsExport.mockResolvedValue([{ name: "Amina", gradeBand: "8-9", eventSection: "girls", subject: "ICT Display Quest", score: 3, points: 30, completedAt: new Date() }]);
     dbMocks.resetSubjectResults.mockResolvedValue({ cleared: 1 });
   });
 
-  it("creates a participant passport only with a valid display name and grade band", async () => {
+  it("creates a participant passport only with a valid display name, grade band, and event section", async () => {
     const caller = appRouter.createCaller(createContext());
-    const result = await caller.event.join({ displayName: "Byte Builders", gradeBand: "6-7" });
+    const result = await caller.event.join({ displayName: "Byte Builders", gradeBand: "6-7", eventSection: "boys" });
     expect(result.accessCode).toBe("TFA-ABC123");
-    expect(dbMocks.createParticipant).toHaveBeenCalledWith({ displayName: "Byte Builders", gradeBand: "6-7" });
-    await expect(caller.event.join({ displayName: "A", gradeBand: "6-7" })).rejects.toThrow();
+    expect(dbMocks.createParticipant).toHaveBeenCalledWith({ displayName: "Byte Builders", gradeBand: "6-7", eventSection: "boys" });
+    await expect(caller.event.join({ displayName: "A", gradeBand: "6-7", eventSection: "boys" })).rejects.toThrow();
   });
 
   it("records a safe activity completion against a formatted passport code", async () => {
@@ -91,13 +92,17 @@ describe("Digital Discovery Passport event procedures", () => {
     expect(dbMocks.moderateSubmission).toHaveBeenCalledWith({ submissionId: 9, status: "approved", adminNote: "Excellent work", reviewerId: 17 });
   });
 
-  it("allows only administrators to export named subject results", async () => {
+  it("allows assigned teachers and administrators to export named ICT studio results", async () => {
     const learner = appRouter.createCaller(createContext("user"));
     await expect(learner.staff.exportResults()).rejects.toThrow();
+    const teacher = appRouter.createCaller(createContext("teacher", "girls"));
+    const teacherResults = await teacher.staff.exportResults();
+    expect(teacherResults[0]).toMatchObject({ eventSection: "girls", subject: "ICT Display Quest" });
+    expect(dbMocks.getSubjectResultsExport).toHaveBeenCalledWith("girls");
     const staff = appRouter.createCaller(createContext("admin"));
     const results = await staff.staff.exportResults();
-    expect(results[0]).toMatchObject({ name: "Amina", subject: "Science", score: 3, points: 30 });
-    expect(dbMocks.getSubjectResultsExport).toHaveBeenCalledTimes(1);
+    expect(results[0]).toMatchObject({ name: "Amina", subject: "ICT Display Quest", score: 3, points: 30 });
+    expect(dbMocks.getSubjectResultsExport).toHaveBeenCalledWith("all");
   });
 
   it("requires an explicit confirmation and administrator access to reset subject results", async () => {

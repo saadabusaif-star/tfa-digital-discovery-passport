@@ -2,13 +2,14 @@ import { COOKIE_NAME } from "@shared/const";
 import { z } from "zod";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
-import { adminProcedure, publicProcedure, router } from "./_core/trpc";
+import { adminProcedure, publicProcedure, router, staffProcedure } from "./_core/trpc";
 import {
   castVote,
   completeActivity,
   createCreativeSubmission,
   createParticipant,
   getLiveBoard,
+  listTeacherAccessGrants,
   getModerationQueue,
   getPassport,
   startQuizSession,
@@ -18,6 +19,8 @@ import {
   moderateSubmission,
   resetSubjectResults,
   setParticipantVisibility,
+  setTeacherAccessGrantStatus,
+  saveTeacherAccessGrant,
   updateActivityResource,
 } from "./db";
 import { storagePut } from "./storage";
@@ -54,6 +57,7 @@ export const appRouter = router({
     join: publicProcedure.input(z.object({
       displayName: z.string().trim().min(2, "Please enter at least 2 characters.").max(80),
       gradeBand: z.enum(["6-7", "8-9", "10-12"]),
+      eventSection: z.enum(["boys", "girls"]),
     })).mutation(({ input }) => createParticipant(input)),
     passport: publicProcedure.input(z.object({ accessCode: passportCode })).query(({ input }) => getPassport(input.accessCode)),
     quizSession: publicProcedure.input(z.object({ accessCode: passportCode, activitySlug })).query(({ input }) => startQuizSession(input)),
@@ -96,10 +100,10 @@ export const appRouter = router({
       optionText: z.string().trim().min(2).max(160),
       promptKey: z.enum(["future-tech", "timetable-pulse", "elective-pulse"]).optional(),
     })).mutation(({ input }) => castVote(input)),
-    liveBoard: publicProcedure.query(() => getLiveBoard()),
+    liveBoard: publicProcedure.input(z.object({ eventSection: z.enum(["boys", "girls"]).optional() }).optional()).query(({ input }) => getLiveBoard(input?.eventSection)),
   }),
   staff: router({
-    overview: adminProcedure.query(() => getStaffOverview()),
+    overview: staffProcedure.query(({ ctx }) => getStaffOverview(ctx.user.staffSection)),
     moderationQueue: adminProcedure.query(() => getModerationQueue()),
     moderate: adminProcedure.input(z.object({
       submissionId: z.number().int().positive(),
@@ -111,9 +115,12 @@ export const appRouter = router({
       resourceUrl: z.string().trim().url().max(512),
       resourceLabel: z.string().trim().min(2).max(160),
     })).mutation(({ input }) => updateActivityResource(input)),
-    setParticipantVisibility: adminProcedure.input(z.object({ participantId: z.number().int().positive(), isActive: z.boolean() })).mutation(({ input }) => setParticipantVisibility(input)),
-    exportResults: adminProcedure.query(() => getSubjectResultsExport()),
+    setParticipantVisibility: staffProcedure.input(z.object({ participantId: z.number().int().positive(), isActive: z.boolean() })).mutation(({ input, ctx }) => setParticipantVisibility({ ...input, staffSection: ctx.user.staffSection })),
+    exportResults: staffProcedure.query(({ ctx }) => getSubjectResultsExport(ctx.user.staffSection)),
     resetResults: adminProcedure.input(z.object({ confirmation: z.literal("RESET RESULTS") })).mutation(() => resetSubjectResults()),
+    teacherAccess: adminProcedure.query(() => listTeacherAccessGrants()),
+    saveTeacherAccess: adminProcedure.input(z.object({ email: z.string().trim().email().max(320), staffSection: z.enum(["boys", "girls", "all"]) })).mutation(({ input }) => saveTeacherAccessGrant(input)),
+    setTeacherAccessStatus: adminProcedure.input(z.object({ id: z.number().int().positive(), isActive: z.boolean() })).mutation(({ input }) => setTeacherAccessGrantStatus(input)),
   }),
 });
 

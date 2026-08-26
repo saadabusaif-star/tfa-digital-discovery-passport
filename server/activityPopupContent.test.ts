@@ -1,33 +1,31 @@
 import { describe, expect, it } from "vitest";
-import { ICT_DISPLAY_CHALLENGE, SUBJECT_QUIZZES } from "../client/src/lib/subjectQuiz";
+import { SUBJECT_QUIZZES } from "../client/src/lib/subjectQuiz";
+import { getQuestionRoute, type GradeBand } from "../shared/quizQuestionBank";
 
-describe("subject quiz content", () => {
-  it("contains the five supplied school subject sections", () => {
-    expect(SUBJECT_QUIZZES.map(quiz => quiz.title)).toEqual(["Science", "Mathematics", "STEM", "Physical Education", "Geography"]);
-  });
+const gradeBands: GradeBand[] = ["6-7", "8-9", "10-12"];
 
-  it("gives every subject exactly three easy-to-hard questions", () => {
-    for (const quiz of SUBJECT_QUIZZES) {
-      expect(quiz.questions).toHaveLength(3);
-      expect(quiz.questions.map(question => question.level)).toEqual(["Easy", "Medium", "Hard"]);
-      expect(quiz.questions.every(question => question.options.length === 4 && question.options.includes(question.answer))).toBe(true);
-    }
-  });
-
-  it("keeps the supplied correct answers for Science, Mathematics, STEM, PE, and Geography", () => {
-    expect(SUBJECT_QUIZZES.map(quiz => quiz.questions.map(question => question.answer))).toEqual([
-      ["B) Earth", "B) Oxygen", "C) Photosynthesis"],
-      ["B) 56", "C) 50", "B) 5"],
-      ["A) Central Processing Unit", "C) SSD", "B) A step-by-step solution to a problem"],
-      ["C) 11", "A) Running", "B) To prepare the body and reduce injury risk"],
-      ["C) Asia", "D) Pacific Ocean", "D) Russia"],
+describe("ICT studio content", () => {
+  it("contains only the five supplied-resource ICT studios", () => {
+    expect(SUBJECT_QUIZZES.map(quiz => quiz.title)).toEqual([
+      "ICT Display Quest",
+      "ICT Foundations",
+      "Keyboard Shortcut Sprint",
+      "Excel Skills Lab",
+      "Digital Technology or Not?",
     ]);
   });
 
-  it("keeps the poster-inspired ICT Display Quest separate from the five supplied subjects", () => {
-    expect(ICT_DISPLAY_CHALLENGE.title).toBe("ICT Display Quest");
-    expect(ICT_DISPLAY_CHALLENGE.questions.map(question => question.level)).toEqual(["Easy", "Medium", "Hard"]);
-    expect(ICT_DISPLAY_CHALLENGE.questions.map(question => question.answer)).toEqual(["A) Sharing information and connecting digitally", "C) Ctrl + N", "B) Virtual reality (VR)"]);
-    expect(SUBJECT_QUIZZES).toHaveLength(5);
+  it("serves a valid Easy, Medium, and Hard server-backed route for every ICT studio and grade band", () => {
+    for (const studio of SUBJECT_QUIZZES) {
+      for (const gradeBand of gradeBands) {
+        const route = getQuestionRoute(studio.slug, gradeBand, () => 0);
+        expect(route.map(question => question.level)).toEqual(["Easy", "Medium", "Hard"]);
+        expect(route.every(question => question.options.length === 4 && question.options.includes(question.answer))).toBe(true);
+      }
+    }
+  });
+
+  it("keeps the ICT display, shortcut, Excel, rules, and presentation resource themes visible in the catalogue", () => {
+    expect(SUBJECT_QUIZZES.map(quiz => quiz.summary).join(" ")).toMatch(/display|shortcut|Excel|presentation|digital/i);
   });
 });

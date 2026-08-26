@@ -16,7 +16,8 @@ export const users = mysqlTable("users", {
   name: text("name"),
   email: varchar("email", { length: 320 }),
   loginMethod: varchar("loginMethod", { length: 64 }),
-  role: mysqlEnum("role", ["user", "admin"]).default("user").notNull(),
+  role: mysqlEnum("role", ["user", "teacher", "admin"]).default("user").notNull(),
+  staffSection: mysqlEnum("staffSection", ["boys", "girls", "all"]).default("all").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
   lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),
@@ -29,8 +30,18 @@ export const participants = mysqlTable("participants", {
   id: int("id").autoincrement().primaryKey(),
   displayName: varchar("displayName", { length: 80 }).notNull(),
   gradeBand: mysqlEnum("gradeBand", ["6-7", "8-9", "10-12"]).notNull(),
+  eventSection: mysqlEnum("eventSection", ["boys", "girls", "unassigned"]).default("unassigned").notNull(),
   accessCode: varchar("accessCode", { length: 16 }).notNull().unique(),
   avatarColor: varchar("avatarColor", { length: 24 }).default("gold").notNull(),
+  isActive: int("isActive").default(1).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export const teacherAccessGrants = mysqlTable("teacher_access_grants", {
+  id: int("id").autoincrement().primaryKey(),
+  email: varchar("email", { length: 320 }).notNull().unique(),
+  staffSection: mysqlEnum("staffSection", ["boys", "girls", "all"]).notNull(),
   isActive: int("isActive").default(1).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
@@ -119,3 +130,4 @@ export type Completion = typeof completions.$inferSelect;
 export type QuizSession = typeof quizSessions.$inferSelect;
 export type Submission = typeof submissions.$inferSelect;
 export type Vote = typeof votes.$inferSelect;
+export type TeacherAccessGrant = typeof teacherAccessGrants.$inferSelect;

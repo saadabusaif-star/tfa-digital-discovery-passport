@@ -9,6 +9,7 @@ import {
   participants,
   quizSessions,
   submissions,
+  teacherAccessGrants,
   users,
   votes,
 } from "../drizzle/schema";
@@ -220,13 +221,11 @@ const EVENT_ACTIVITY_CATALOG = [
 ];
 
 const SUBJECT_QUIZ_CATALOG = [
-  { slug: "science-quiz", title: "Science", zone: "discover" as const, kind: "quiz" as const, summary: "Explore Earth, the air we breathe, and the energy inside plants.", instructions: "Answer three questions: easy, medium, and hard.", resourceUrl: null, resourceLabel: null, points: 30, badgeKey: "science-spark", badgeName: "Science Spark", gradeHint: "Easy · Medium · Hard", displayOrder: 1 },
-  { slug: "mathematics-quiz", title: "Mathematics", zone: "play" as const, kind: "quiz" as const, summary: "Work through multiplication, percentages, and algebra.", instructions: "Answer three questions: easy, medium, and hard.", resourceUrl: null, resourceLabel: null, points: 30, badgeKey: "math-mind", badgeName: "Math Mind", gradeHint: "Easy · Medium · Hard", displayOrder: 2 },
-  { slug: "stem-quiz", title: "STEM", zone: "play" as const, kind: "quiz" as const, summary: "Test your knowledge of computers, storage, and algorithms.", instructions: "Answer three questions: easy, medium, and hard.", resourceUrl: null, resourceLabel: null, points: 30, badgeKey: "stem-builder", badgeName: "STEM Builder", gradeHint: "Easy · Medium · Hard", displayOrder: 3 },
-  { slug: "pe-quiz", title: "Physical Education", zone: "connect" as const, kind: "quiz" as const, summary: "Think about football, fitness, and staying ready to move.", instructions: "Answer three questions: easy, medium, and hard.", resourceUrl: null, resourceLabel: null, points: 30, badgeKey: "active-ace", badgeName: "Active Ace", gradeHint: "Easy · Medium · Hard", displayOrder: 4 },
-  { slug: "geography-quiz", title: "Geography", zone: "discover" as const, kind: "quiz" as const, summary: "Travel through continents, oceans, and the world map.", instructions: "Answer three questions: easy, medium, and hard.", resourceUrl: null, resourceLabel: null, points: 30, badgeKey: "world-wise", badgeName: "World Wise", gradeHint: "Easy · Medium · Hard", displayOrder: 5 },
-  { slug: "ict-display-challenge", title: "ICT Display Quest", zone: "play" as const, kind: "quiz" as const, summary: "A poster-inspired bonus challenge using ICT, Computing, and keyboard-shortcut display clues.", instructions: "Use the three classroom displays to answer three quick ICT questions.", resourceUrl: null, resourceLabel: null, points: 30, badgeKey: "display-detective", badgeName: "Display Detective", gradeHint: "Poster challenge · 3 quick questions", displayOrder: 6 },
-  { slug: "digital-technology-or-not", title: "Digital Technology or Not?", zone: "play" as const, kind: "quiz" as const, summary: "Use the classroom presentation clues to sort digital tools, information, and everyday objects.", instructions: "Answer a fresh three-question technology route chosen for your grade band.", resourceUrl: null, resourceLabel: null, points: 30, badgeKey: "tech-spotter", badgeName: "Tech Spotter", gradeHint: "Presentation challenge · 3 quick questions", displayOrder: 7 },
+  { slug: "ict-display-challenge", title: "ICT Display Quest", zone: "play" as const, kind: "quiz" as const, summary: "A poster-inspired challenge using ICT, Computing, and keyboard-shortcut display clues.", instructions: "Use the three classroom displays to answer three quick ICT questions.", resourceUrl: null, resourceLabel: null, points: 30, badgeKey: "display-detective", badgeName: "Display Detective", gradeHint: "Poster challenge · 3 quick questions", displayOrder: 1 },
+  { slug: "ict-foundations", title: "ICT Foundations", zone: "discover" as const, kind: "quiz" as const, summary: "Build confident knowledge of devices, data, networks, and responsible digital habits.", instructions: "Use the ICT I Can posters and Computing Area Rules to answer three ICT questions.", resourceUrl: null, resourceLabel: null, points: 30, badgeKey: "ict-navigator", badgeName: "ICT Navigator", gradeHint: "Rules and skills · 3 quick questions", displayOrder: 2 },
+  { slug: "keyboard-shortcuts", title: "Keyboard Shortcut Sprint", zone: "play" as const, kind: "quiz" as const, summary: "Practise useful shortcuts from the supplied keyboard displays.", instructions: "Read the shortcut posters, then complete an Easy, Medium, and Hard ICT route.", resourceUrl: null, resourceLabel: null, points: 30, badgeKey: "shortcut-sprinter", badgeName: "Shortcut Sprinter", gradeHint: "Shortcut posters · 3 quick questions", displayOrder: 3 },
+  { slug: "excel-skills", title: "Excel Skills Lab", zone: "create" as const, kind: "quiz" as const, summary: "Use the Excel booklet and skill pages to organise, calculate, and present data.", instructions: "Read the Excel resources, then answer a fresh grade-aware three-question route.", resourceUrl: null, resourceLabel: null, points: 30, badgeKey: "spreadsheet-strategist", badgeName: "Spreadsheet Strategist", gradeHint: "Excel booklet · 3 quick questions", displayOrder: 4 },
+  { slug: "digital-technology-or-not", title: "Digital Technology or Not?", zone: "play" as const, kind: "quiz" as const, summary: "Use the classroom presentation clues to sort digital tools, information, and everyday objects.", instructions: "Answer a fresh three-question technology route chosen for your grade band.", resourceUrl: null, resourceLabel: null, points: 30, badgeKey: "tech-spotter", badgeName: "Tech Spotter", gradeHint: "Presentation challenge · 3 quick questions", displayOrder: 5 },
 ];
 
 export const LIVE_POLL_PROMPTS = [
@@ -279,12 +278,21 @@ export async function upsertUser(user: InsertUser): Promise<void> {
   });
   values.lastSignedIn = user.lastSignedIn ?? new Date();
   updateSet.lastSignedIn = values.lastSignedIn;
+  const normalizedEmail = user.email?.trim().toLowerCase();
+  const grant = normalizedEmail ? (await db.select().from(teacherAccessGrants).where(and(eq(teacherAccessGrants.email, normalizedEmail), eq(teacherAccessGrants.isActive, 1))).limit(1))[0] : undefined;
   if (user.role !== undefined) {
     values.role = user.role;
     updateSet.role = user.role;
   } else if (user.openId === ENV.ownerOpenId) {
     values.role = "admin";
     updateSet.role = "admin";
+    values.staffSection = "all";
+    updateSet.staffSection = "all";
+  } else if (grant) {
+    values.role = "teacher";
+    values.staffSection = grant.staffSection;
+    updateSet.role = "teacher";
+    updateSet.staffSection = grant.staffSection;
   }
   await db.insert(users).values(values).onDuplicateKeyUpdate({ set: updateSet });
 }
@@ -294,6 +302,22 @@ export async function getUserByOpenId(openId: string) {
   if (!db) return undefined;
   const result = await db.select().from(users).where(eq(users.openId, openId)).limit(1);
   return result[0];
+}
+
+export async function listTeacherAccessGrants() {
+  const db = await requireDb();
+  return db.select().from(teacherAccessGrants).orderBy(teacherAccessGrants.email);
+}
+
+export async function saveTeacherAccessGrant(input: { email: string; staffSection: "boys" | "girls" | "all" }) {
+  const db = await requireDb();
+  const email = input.email.trim().toLowerCase();
+  await db.insert(teacherAccessGrants).values({ email, staffSection: input.staffSection, isActive: 1 }).onDuplicateKeyUpdate({ set: { staffSection: input.staffSection, isActive: 1, updatedAt: new Date() } });
+}
+
+export async function setTeacherAccessGrantStatus(input: { id: number; isActive: boolean }) {
+  const db = await requireDb();
+  await db.update(teacherAccessGrants).set({ isActive: input.isActive ? 1 : 0, updatedAt: new Date() }).where(eq(teacherAccessGrants.id, input.id));
 }
 
 export async function ensureEventCatalog() {
@@ -313,7 +337,7 @@ export async function listActivities() {
   return db.select().from(activities).where(eq(activities.isActive, 1)).orderBy(activities.displayOrder);
 }
 
-export async function createParticipant(input: { displayName: string; gradeBand: "6-7" | "8-9" | "10-12" }) {
+export async function createParticipant(input: { displayName: string; gradeBand: "6-7" | "8-9" | "10-12"; eventSection: "boys" | "girls" }) {
   const db = await requireDb();
   const palette = ["gold", "coral", "teal", "violet"];
   for (let attempt = 0; attempt < 4; attempt += 1) {
@@ -322,6 +346,7 @@ export async function createParticipant(input: { displayName: string; gradeBand:
       await db.insert(participants).values({
         displayName: input.displayName.trim(),
         gradeBand: input.gradeBand,
+        eventSection: input.eventSection,
         accessCode,
         avatarColor: palette[Math.floor(Math.random() * palette.length)] ?? "gold",
       });
@@ -467,10 +492,10 @@ export async function castVote(input: { accessCode: string; optionText: string; 
   });
 }
 
-export async function getLiveBoard() {
+export async function getLiveBoard(eventSection?: "boys" | "girls") {
   const db = await requireDb();
   const [participantRows, completionRows, activityRows, approvedSubmissions, voteRows, subjectCompletionRows] = await Promise.all([
-    db.select().from(participants).where(eq(participants.isActive, 1)),
+    db.select().from(participants).where(eventSection ? and(eq(participants.isActive, 1), eq(participants.eventSection, eventSection)) : eq(participants.isActive, 1)),
     db.select().from(completions),
     listActivities(),
     db.select({ submission: submissions, displayName: participants.displayName, activityTitle: activities.title })
@@ -484,7 +509,7 @@ export async function getLiveBoard() {
       .from(completions)
       .innerJoin(activities, eq(completions.activityId, activities.id))
       .innerJoin(participants, eq(completions.participantId, participants.id))
-      .where(eq(participants.isActive, 1)),
+      .where(eventSection ? and(eq(participants.isActive, 1), eq(participants.eventSection, eventSection)) : eq(participants.isActive, 1)),
   ]);
   const visibleParticipantIds = participantRows.map(participant => participant.id);
   const visibleCompletions = completionRows.filter(item => visibleParticipantIds.includes(item.participantId));
@@ -517,6 +542,7 @@ export async function getLiveBoard() {
   }).filter((item): item is NonNullable<typeof item> => Boolean(item)).sort((a, b) => b.score - a.score || b.points - a.points).slice(0, 12);
   return {
     participants: participantScores,
+    eventSection: eventSection ?? "all",
     totals: { participantCount: participantRows.length, completionCount: visibleCompletions.length, totalPoints, activityCount: activityRows.length },
     votes: votesForPrompt("future-tech"),
     icebreakerPolls: LIVE_POLL_PROMPTS.filter(prompt => prompt.key !== "future-tech").map(prompt => ({ ...prompt, votes: votesForPrompt(prompt.key) })),
@@ -556,7 +582,7 @@ export async function moderateSubmission(input: { submissionId: number; status: 
   }).where(eq(submissions.id, input.submissionId));
 }
 
-export async function getStaffOverview() {
+export async function getStaffOverview(staffSection: "boys" | "girls" | "all" = "all") {
   const db = await requireDb();
   const [participantRows, completionRows, pendingRows, approvedRows, activityRows] = await Promise.all([
     db.select().from(participants),
@@ -565,22 +591,26 @@ export async function getStaffOverview() {
     db.select().from(submissions).where(eq(submissions.status, "approved")),
     listActivities(),
   ]);
+  const scopedParticipants = staffSection === "all" ? participantRows : participantRows.filter(participant => participant.eventSection === staffSection);
+  const scopedParticipantIds = new Set(scopedParticipants.map(participant => participant.id));
+  const scopedCompletions = completionRows.filter(completion => scopedParticipantIds.has(completion.participantId));
   const activityCount = activityRows.length;
   return {
     totals: {
-      participants: participantRows.length,
-      completions: completionRows.length,
+      participants: scopedParticipants.length,
+      completions: scopedCompletions.length,
       pendingSubmissions: pendingRows.length,
       approvedSubmissions: approvedRows.length,
       activeActivities: activityCount,
     },
     activities: activityRows,
-    participants: participantRows.map(participant => {
-      const personCompletions = completionRows.filter(completion => completion.participantId === participant.id);
+    participants: scopedParticipants.map(participant => {
+      const personCompletions = scopedCompletions.filter(completion => completion.participantId === participant.id);
       return {
         id: participant.id,
         displayName: participant.displayName,
         gradeBand: participant.gradeBand,
+        eventSection: participant.eventSection,
         isActive: participant.isActive,
         completedCount: personCompletions.length,
         totalPoints: personCompletions.reduce((sum, completion) => sum + completion.awardedPoints, 0),
@@ -596,16 +626,20 @@ export async function updateActivityResource(input: { activityId: number; resour
   await db.update(activities).set({ resourceUrl: input.resourceUrl.trim(), resourceLabel: input.resourceLabel.trim(), updatedAt: new Date() }).where(eq(activities.id, input.activityId));
 }
 
-export async function setParticipantVisibility(input: { participantId: number; isActive: boolean }) {
+export async function setParticipantVisibility(input: { participantId: number; isActive: boolean; staffSection: "boys" | "girls" | "all" }) {
   const db = await requireDb();
+  const participant = await db.select().from(participants).where(eq(participants.id, input.participantId)).limit(1);
+  if (!participant[0]) throw new Error("Student record not found.");
+  if (input.staffSection !== "all" && participant[0].eventSection !== input.staffSection) throw new Error("You can manage only your assigned event section.");
   await db.update(participants).set({ isActive: input.isActive ? 1 : 0, updatedAt: new Date() }).where(eq(participants.id, input.participantId));
 }
 
-export async function getSubjectResultsExport() {
+export async function getSubjectResultsExport(staffSection: "boys" | "girls" | "all" = "all") {
   const db = await requireDb();
   const rows = await db.select({
     displayName: participants.displayName,
     gradeBand: participants.gradeBand,
+    eventSection: participants.eventSection,
     subject: activities.title,
     awardedPoints: completions.awardedPoints,
     completedAt: completions.completedAt,
@@ -613,12 +647,13 @@ export async function getSubjectResultsExport() {
     .from(completions)
     .innerJoin(participants, eq(completions.participantId, participants.id))
     .innerJoin(activities, eq(completions.activityId, activities.id))
-    .where(inArray(activities.slug, QUIZ_ACTIVITY_SLUGS))
+    .where(staffSection === "all" ? inArray(activities.slug, QUIZ_ACTIVITY_SLUGS) : and(inArray(activities.slug, QUIZ_ACTIVITY_SLUGS), eq(participants.eventSection, staffSection)))
     .orderBy(desc(completions.completedAt));
 
   return rows.map(row => ({
     name: row.displayName,
     gradeBand: row.gradeBand,
+    eventSection: row.eventSection,
     subject: row.subject,
     score: Math.max(0, Math.min(3, Math.round(row.awardedPoints / 10))),
     points: row.awardedPoints,

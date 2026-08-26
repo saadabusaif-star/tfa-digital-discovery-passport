@@ -145,3 +145,13 @@
 - [x] Make activity-shortcut activation visibly immediate, with an in-page destination indicator or focused section state that does not require students to infer the scroll result.
 - [x] Replace the long welcome overlay with concise, helpful entry guidance that does not obstruct the first activity unnecessarily.
 - [x] Verify reordered activity navigation, visible shortcut feedback, overlay behavior, and desktop plus 390×844 mobile presentation before saving a new checkpoint.
+
+- [x] Review the current My record, Live board, and staff control-room capabilities for a simpler event-day oversight design.
+- [x] Propose a focused set of protected controls for records and live results, then confirm the ICT team’s priorities before implementation.
+- [ ] Implement and test the approved record and live-board control improvements without exposing staff actions on student pages.
+
+- [x] Replace the five non-ICT subject studios with ICT-only learning activities drawn from the supplied classroom displays, booklets, posters, rules, shortcut resources, and presentation.
+- [x] Add a student section choice for Boys or Girls and store it with the participant record for section-aware records and live results.
+- [x] Add a protected multi-teacher role and Boys/Girls section assignment model, with individual sign-in access rather than shared credentials.
+- [ ] Build staff controls for searching records, viewing section-specific results, controlling the section live board, and administering teacher access.
+- [ ] Verify ICT-only student routes and separate Boys/Girls teacher views, then document the secure teacher-onboarding steps.
