@@ -1,5 +1,5 @@
 import { BookOpenCheck, Radio, Trophy } from "lucide-react";
-import { Link } from "wouter";
+import { STUDENT_NAVIGATION } from "@/lib/studentExperience";
 
 const logoUrl = "/manus-storage/tfa-school-logo_006d90e3.png";
 
@@ -8,6 +8,7 @@ export function UaeFlag() {
 }
 
 export function EventHeader({ compact = false }: { compact?: boolean }) {
+  const navigationIcons = { trophy: Trophy, record: BookOpenCheck, live: Radio } as const;
   return <header className={`school-header${compact ? " school-header--compact" : ""}`}>
     <div className="container school-header__top">
       <div className="school-identity">
@@ -23,6 +24,6 @@ export function EventHeader({ compact = false }: { compact?: boolean }) {
         <img className="school-logo" src={logoUrl} alt="The First Academy School logo" />
       </div>
     </div>
-    {!compact && <div className="school-nav-wrap"><div className="container school-nav"><Link href="/" className="school-nav__brand"><span>ICT WELCOME DAY</span><b>Discovery Lab</b></Link><nav aria-label="Event navigation"><Link href="/" className="school-nav__link"><Trophy size={16} />Subjects</Link><Link href="/passport" className="school-nav__link"><BookOpenCheck size={16} />My record</Link><Link href="/live" className="school-nav__link"><Radio size={16} />Live board</Link></nav></div></div>}
+    {!compact && <div className="school-nav-wrap"><div className="container school-nav"><a href="/#welcome" className="school-nav__brand"><span>ICT WELCOME DAY</span><b>Discovery Lab</b></a><nav aria-label="Student navigation">{STUDENT_NAVIGATION.map(item => { const Icon = navigationIcons[item.icon]; return <a key={item.label} href={item.href} className="school-nav__link"><Icon size={16} /><span>{item.label}</span></a>; })}</nav></div></div>}
   </header>;
 }

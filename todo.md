@@ -98,3 +98,9 @@
 - [x] Complete ICT Display Quest at an explicitly confirmed phone or tablet viewport, then verify its bonus card, personal record entry, live-board row, and cleanup.
 - [x] Verify the new display-resource activity end to end and save an updated checkpoint.
 - [x] Verify the administrator projector shortcut in a signed-in staff session, or document the administrator-credential blocker before the final checkpoint.
+
+- [x] Move the ICT Display Quest panel to the top of the student home experience while preserving it as a separate Welcome Day bonus.
+- [x] Give each of the five subject labs a matching illustrated activity presentation with clear three-question subject prompts.
+- [x] Repair and verify the Discovery Lab, Subjects, My record, and Live board navigation links and click behavior.
+- [x] Replace the current student introduction with clearer, more useful UAE-focused Welcome Day guidance.
+- [x] Verify the reordered UAE-focused student experience on desktop and 390×844 mobile, then save an updated checkpoint.
