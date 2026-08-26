@@ -86,3 +86,8 @@
 - [x] Verify artwork, projector mode, staff controls, and responsive five-subject quiz behavior, then save a final checkpoint.
 - [x] Complete one post-enhancement subject quiz at an explicitly confirmed phone or tablet viewport and confirm the illustrated cards, scoring, personal record, and live-board publication still work.
 - [x] Exercise the staff export and reset controls in an authenticated admin session, or document the credential-access blocker before the final checkpoint.
+- [x] Add a concise animated welcome screen that introduces the five-subject quiz and lets students begin quickly.
+- [x] Add a clear subject-by-subject leaderboard to the live classroom board.
+- [x] Add a safeguarded projector shortcut suitable for event staff, without exposing controls to students.
+- [ ] Verify the new welcome, leaderboard, and projector shortcut across responsive student and display views, then save a final checkpoint.
+- [x] Verify the administrator projector shortcut in a signed-in staff session, or document the administrator-credential blocker before the final checkpoint.

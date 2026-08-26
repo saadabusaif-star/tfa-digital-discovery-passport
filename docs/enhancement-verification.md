@@ -10,6 +10,8 @@ The same illustrated Science flow was then completed again in an explicitly conf
 
 The live board’s **Projector mode** button was exercised in the running application. It entered the distraction-free display layout with enlarged result metrics and rows, displayed an **Exit projector** control, and then returned to the normal live-board view.
 
+The subsequent event-ready update moved the projector activation shortcut behind administrator authentication and added a staff-only `/live?projector=1` shortcut in the staff control room. The public live board was browser-checked after this change: students can still see the live results and subject leaderboard, but the projector activation control is absent. An authenticated school administrator session was not available in this workspace, so the staff-only shortcut itself could not be clicked. The protected behavior is implemented through the existing administrator role check, and the documentation records this access limitation for event staff to validate after signing in.
+
 ## Staff controls and access status
 
 The `/staff` route was confirmed to require sign-in in the available browser session. No school administrator credentials were available, so the CSV export and confirmation-gated reset controls could not be executed in an authenticated UI session. The staff procedures are guarded by `adminProcedure`; router tests confirm that non-admin users cannot call either export or reset, that reset rejects any confirmation other than `RESET RESULTS`, and that an administrator can invoke both protected procedures. The automated test suite passed with **16 tests**.

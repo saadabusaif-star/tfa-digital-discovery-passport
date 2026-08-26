@@ -9,6 +9,7 @@ import { startLogin } from "./const";
 import "./index.css";
 import "./lab-art.css";
 import "./display-controls.css";
+import "./event-additions.css";
 
 const queryClient = new QueryClient();
 
