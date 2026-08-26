@@ -23,7 +23,20 @@ describe("grade-aware randomized quiz question bank", () => {
 
   it("provides broad resource routes and actively avoids issued question IDs while fresh alternatives remain", () => {
     for (const gradeBand of gradeBands) {
-      for (const slug of QUIZ_ACTIVITY_SLUGS) expect(getQuestionPoolSize(slug, gradeBand)).toBeGreaterThanOrEqual(9);
+      for (const slug of QUIZ_ACTIVITY_SLUGS) {
+        expect(getQuestionPoolSize(slug, gradeBand)).toBeGreaterThanOrEqual(9);
+        const first = getQuestionRoute(slug, gradeBand, () => 0);
+        const second = getQuestionRoute(slug, gradeBand, () => 0, first.map(question => question.id));
+        const third = getQuestionRoute(slug, gradeBand, () => 0, [...first, ...second].map(question => question.id));
+        expect(new Set([...first, ...second, ...third].map(question => question.id)).size).toBe(9);
+        const issued = [...first, ...second, ...third].map(question => question.id);
+        for (let routeIndex = 0; routeIndex < getQuestionPoolSize(slug, gradeBand); routeIndex += 1) {
+          issued.push(...getQuestionRoute(slug, gradeBand, () => 0, issued).map(question => question.id));
+        }
+        const fallback = getQuestionRoute(slug, gradeBand, () => 0, issued);
+        expect(fallback).toHaveLength(3);
+        expect(fallback.every(question => issued.includes(question.id))).toBe(true);
+      }
       expect(getQuestionPoolSize("ict-display-challenge", gradeBand)).toBeGreaterThanOrEqual(12);
       expect(getQuestionPoolSize("digital-technology-or-not", gradeBand)).toBeGreaterThanOrEqual(15);
       const first = getQuestionRoute("digital-technology-or-not", gradeBand, () => 0);
