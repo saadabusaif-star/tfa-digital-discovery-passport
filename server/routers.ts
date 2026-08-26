@@ -12,8 +12,10 @@ import {
   getModerationQueue,
   getPassport,
   getStaffOverview,
+  getSubjectResultsExport,
   listActivities,
   moderateSubmission,
+  resetSubjectResults,
   setParticipantVisibility,
   updateActivityResource,
 } from "./db";
@@ -107,6 +109,8 @@ export const appRouter = router({
       resourceLabel: z.string().trim().min(2).max(160),
     })).mutation(({ input }) => updateActivityResource(input)),
     setParticipantVisibility: adminProcedure.input(z.object({ participantId: z.number().int().positive(), isActive: z.boolean() })).mutation(({ input }) => setParticipantVisibility(input)),
+    exportResults: adminProcedure.query(() => getSubjectResultsExport()),
+    resetResults: adminProcedure.input(z.object({ confirmation: z.literal("RESET RESULTS") })).mutation(() => resetSubjectResults()),
   }),
 });
 

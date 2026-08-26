@@ -7,6 +7,8 @@ import superjson from "superjson";
 import App from "./App";
 import { startLogin } from "./const";
 import "./index.css";
+import "./lab-art.css";
+import "./display-controls.css";
 
 const queryClient = new QueryClient();
 

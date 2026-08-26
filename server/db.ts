@@ -1,4 +1,4 @@
-import { and, desc, eq } from "drizzle-orm";
+import { and, desc, eq, inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import { customAlphabet } from "nanoid";
 import {
@@ -560,4 +560,40 @@ export async function updateActivityResource(input: { activityId: number; resour
 export async function setParticipantVisibility(input: { participantId: number; isActive: boolean }) {
   const db = await requireDb();
   await db.update(participants).set({ isActive: input.isActive ? 1 : 0, updatedAt: new Date() }).where(eq(participants.id, input.participantId));
+}
+
+export async function getSubjectResultsExport() {
+  const db = await requireDb();
+  const rows = await db.select({
+    displayName: participants.displayName,
+    gradeBand: participants.gradeBand,
+    subject: activities.title,
+    awardedPoints: completions.awardedPoints,
+    completedAt: completions.completedAt,
+  })
+    .from(completions)
+    .innerJoin(participants, eq(completions.participantId, participants.id))
+    .innerJoin(activities, eq(completions.activityId, activities.id))
+    .where(inArray(activities.slug, Object.keys(SUBJECT_QUIZ_ANSWERS)))
+    .orderBy(desc(completions.completedAt));
+
+  return rows.map(row => ({
+    name: row.displayName,
+    gradeBand: row.gradeBand,
+    subject: row.subject,
+    score: Math.max(0, Math.min(3, Math.round(row.awardedPoints / 10))),
+    points: row.awardedPoints,
+    completedAt: row.completedAt,
+  }));
+}
+
+export async function resetSubjectResults() {
+  const db = await requireDb();
+  const activeSubjects = await listActivities();
+  const subjectIds = activeSubjects.map(activity => activity.id);
+  if (!subjectIds.length) return { cleared: 0 };
+
+  const existing = await db.select({ id: completions.id }).from(completions).where(inArray(completions.activityId, subjectIds));
+  if (existing.length) await db.delete(completions).where(inArray(completions.activityId, subjectIds));
+  return { cleared: existing.length };
 }

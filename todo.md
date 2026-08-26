@@ -80,3 +80,7 @@
 - [x] Complete one post-redesign subject quiz in the browser and confirm its success panel, learning record, and named live-board row.
 - [x] Verify one complete post-redesign subject flow at a responsive tablet or phone breakpoint, remove temporary QA data, and save the final checkpoint.
 - [x] Restore active subject catalog records so completed subject IDs resolve correctly in the home and personal-record interfaces.
+- [x] Create bespoke, cohesive visual artwork for Science, Mathematics, STEM, Physical Education, and Geography learning labs.
+- [x] Add a distraction-free full-screen projector mode for the named live results board.
+- [x] Add staff-only controls to export current results and reset event results with clear safeguards.
+- [ ] Verify artwork, projector mode, staff controls, and responsive five-subject quiz behavior, then save a final checkpoint.

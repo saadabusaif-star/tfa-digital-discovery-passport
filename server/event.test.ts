@@ -13,7 +13,9 @@ const dbMocks = vi.hoisted(() => ({
   getLiveBoard: vi.fn(),
   getModerationQueue: vi.fn(),
   getStaffOverview: vi.fn(),
+  getSubjectResultsExport: vi.fn(),
   moderateSubmission: vi.fn(),
+  resetSubjectResults: vi.fn(),
   updateActivityResource: vi.fn(),
 }));
 
@@ -46,6 +48,8 @@ describe("Digital Discovery Passport event procedures", () => {
     dbMocks.createParticipant.mockResolvedValue({ id: 1, displayName: "Byte Builders", gradeBand: "6-7", accessCode: "TFA-ABC123" });
     dbMocks.completeActivity.mockResolvedValue({ alreadyCompleted: false, pointsAdded: 15, activity: { slug: "code-breaker" } });
     dbMocks.getLiveBoard.mockResolvedValue({ totals: { participantCount: 0, completionCount: 0, totalPoints: 0, activityCount: 9 }, participants: [], votes: [], words: [], recentWork: [] });
+    dbMocks.getSubjectResultsExport.mockResolvedValue([{ name: "Amina", gradeBand: "8-9", subject: "Science", score: 3, points: 30, completedAt: new Date() }]);
+    dbMocks.resetSubjectResults.mockResolvedValue({ cleared: 1 });
   });
 
   it("creates a participant passport only with a valid display name and grade band", async () => {
@@ -85,6 +89,24 @@ describe("Digital Discovery Passport event procedures", () => {
     const staff = appRouter.createCaller(createContext("admin"));
     await staff.staff.moderate({ submissionId: 9, status: "approved", adminNote: "Excellent work" });
     expect(dbMocks.moderateSubmission).toHaveBeenCalledWith({ submissionId: 9, status: "approved", adminNote: "Excellent work", reviewerId: 17 });
+  });
+
+  it("allows only administrators to export named subject results", async () => {
+    const learner = appRouter.createCaller(createContext("user"));
+    await expect(learner.staff.exportResults()).rejects.toThrow();
+    const staff = appRouter.createCaller(createContext("admin"));
+    const results = await staff.staff.exportResults();
+    expect(results[0]).toMatchObject({ name: "Amina", subject: "Science", score: 3, points: 30 });
+    expect(dbMocks.getSubjectResultsExport).toHaveBeenCalledTimes(1);
+  });
+
+  it("requires an explicit confirmation and administrator access to reset subject results", async () => {
+    const learner = appRouter.createCaller(createContext("user"));
+    await expect(learner.staff.resetResults({ confirmation: "RESET RESULTS" })).rejects.toThrow();
+    const staff = appRouter.createCaller(createContext("admin"));
+    await expect(staff.staff.resetResults({ confirmation: "reset" as "RESET RESULTS" })).rejects.toThrow();
+    await expect(staff.staff.resetResults({ confirmation: "RESET RESULTS" })).resolves.toEqual({ cleared: 1 });
+    expect(dbMocks.resetSubjectResults).toHaveBeenCalledTimes(1);
   });
 
   it("aggregates persisted completion rows into a stable passport score and badge list", () => {
