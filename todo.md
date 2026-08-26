@@ -74,3 +74,6 @@
 - [x] Show completion status only on the specific subject a student has finished.
 - [x] Simplify the passport page into a subject-quiz summary with completed subject results and a clear next-section action.
 - [x] Complete Mathematics, STEM, PE, and Geography quiz flows end to end and verify their named live-board results.
+- [x] Replace the current visual theme, typography, colours, and page structure with a modern school-event interface rather than an e-commerce-style layout.
+- [x] Redesign the student quiz, passport, and live-board pages for responsive phone, tablet, laptop, and large-display use.
+- [ ] Verify the redesigned interface preserves five-subject quiz scoring and named live results, then save a new checkpoint.

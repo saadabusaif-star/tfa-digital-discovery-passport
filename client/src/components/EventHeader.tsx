@@ -1,52 +1,28 @@
-import { Award, Radio, ShieldCheck } from "lucide-react";
+import { BookOpenCheck, Radio, Trophy } from "lucide-react";
 import { Link } from "wouter";
 
 const logoUrl = "/manus-storage/tfa-school-logo_006d90e3.png";
 
 export function UaeFlag() {
-  return (
-    <div className="uae-flag" aria-label="United Arab Emirates flag" role="img">
-      <span className="uae-red" />
-      <span className="uae-green" />
-      <span className="uae-white" />
-      <span className="uae-black" />
-    </div>
-  );
+  return <div className="uae-flag" aria-label="United Arab Emirates flag" role="img"><span className="uae-red" /><span className="uae-green" /><span className="uae-white" /><span className="uae-black" /></div>;
 }
 
 export function EventHeader({ compact = false }: { compact?: boolean }) {
-  return (
-    <header className={compact ? "event-header compact" : "event-header"}>
-      <div className="event-header__utility event-header__utility--impact container">
-        <div className="brand-side brand-side--left">
-          <UaeFlag />
-          <div className="school-brand-text">
-            <p className="utility-kicker">United Arab Emirates · Sharjah</p>
-            <p className="utility-label">The First Academy School</p>
-            <span>ICT Department · Welcome Day 2026</span>
-          </div>
-        </div>
-        <div className="brand-side brand-side--right">
-          <div className="department-chip">
-            <p>GRADES</p>
-            <strong>6–12</strong>
-          </div>
-          <img className="school-logo" src={logoUrl} alt="The First Academy School logo" />
+  return <header className={`school-header${compact ? " school-header--compact" : ""}`}>
+    <div className="container school-header__top">
+      <div className="school-identity">
+        <UaeFlag />
+        <div>
+          <p>United Arab Emirates · Sharjah</p>
+          <strong>The First Academy School</strong>
+          <span>ICT Department · Welcome Day</span>
         </div>
       </div>
-      {!compact && (
-        <div className="container event-header__main">
-          <Link href="/" className="event-wordmark">
-            <span className="event-wordmark__eyebrow">The First Academy · ICT Experience</span>
-            <span className="event-wordmark__title">Digital Discovery <em>Passport</em></span>
-          </Link>
-          <nav className="event-nav" aria-label="Event navigation">
-            <Link href="/" className="event-nav__item"><Award size={16} /> Explore</Link>
-            <Link href="/passport" className="event-nav__item"><ShieldCheck size={16} /> My Passport</Link>
-            <Link href="/live" className="event-nav__item"><Radio size={16} /> Live Wall</Link>
-          </nav>
-        </div>
-      )}
-    </header>
-  );
+      <div className="school-header__right">
+        <span className="school-grade">Grades <b>6–12</b></span>
+        <img className="school-logo" src={logoUrl} alt="The First Academy School logo" />
+      </div>
+    </div>
+    {!compact && <div className="school-nav-wrap"><div className="container school-nav"><Link href="/" className="school-nav__brand"><span>ICT WELCOME DAY</span><b>Discovery Lab</b></Link><nav aria-label="Event navigation"><Link href="/" className="school-nav__link"><Trophy size={16} />Subjects</Link><Link href="/passport" className="school-nav__link"><BookOpenCheck size={16} />My record</Link><Link href="/live" className="school-nav__link"><Radio size={16} />Live board</Link></nav></div></div>}
+  </header>;
 }
