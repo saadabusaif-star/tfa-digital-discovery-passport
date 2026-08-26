@@ -184,3 +184,7 @@
 
 - [x] Add a visible Section and class text field that accepts entries such as Boy 7F, then store the normalized value with the student record.
 - [x] Group staff records and class live-board views by the saved Boy/Girl plus class value, without teacher or class dropdown lists for students.
+
+- [x] Redesign the student grade-group control and entry-form spacing so its menu cannot cover the Start ICT route action.
+- [x] Improve Section and class guidance and touch-target spacing in the direct Boy 7F entry form.
+- [x] Verify the refined entry form at desktop and 390×844 phone sizes before saving a checkpoint.

@@ -63,3 +63,15 @@
 .join-station__ready { margin-top:20px; }
 .join-station__ready button { display:inline-flex; align-items:center; gap:5px; margin-top:10px; padding:0; border:0; background:transparent; color:var(--lime); font-size:11px; font-weight:800; }
 @media (min-width:961px) { .join-station { max-width:540px; justify-self:end; width:100%; }.welcome-intro__copy { min-height:0; } }
+
+/* The grade menu expands in the form flow, so it never covers the primary action. */
+.join-station__form { align-items:start; }
+.grade-picker { position:relative; }
+.grade-picker__trigger { display:flex; width:100%; height:43px; align-items:center; justify-content:space-between; padding-inline:11px; border:1px solid #55799f; border-radius:8px; background:#17365d; color:#fff; font-size:13px; text-align:left; }
+.grade-picker__trigger:focus-visible,.grade-picker__options button:focus-visible { outline:3px solid var(--lime); outline-offset:2px; }
+.grade-picker__options { display:grid; gap:4px; margin-top:7px; padding:6px; border:1px solid #55799f; border-radius:9px; background:#102f54; box-shadow:0 9px 18px rgba(4,17,34,.32); }
+.grade-picker__options button { min-height:36px; padding:8px 10px; border:0; border-radius:6px; background:transparent; color:#e9f4ff; font-size:12px; text-align:left; }
+.grade-picker__options button:hover,.grade-picker__options button[aria-selected="true"] { background:#285585; color:var(--lime); }
+.join-station__class-field { grid-column:1/-1; }
+.join-station__class-field small { margin-top:2px; color:#a9c2da; font-size:10px; line-height:1.4; }
+@media (max-width:640px) { .join-station__class-field { grid-column:auto; }.grade-picker__trigger { min-height:46px; }.grade-picker__options button { min-height:42px; } }
