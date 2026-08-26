@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { startLogin } from "@/const";
 import { trpc } from "@/lib/trpc";
 import { Check, ClipboardCheck, Download, ExternalLink, FileText, Loader2, Maximize2, MonitorUp, RotateCcw, ShieldAlert, ShieldCheck, Sparkles, UsersRound, X } from "lucide-react";
+import QRCode from "qrcode";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -18,7 +19,7 @@ const csvCell = (value: unknown) => `"${String(value ?? "").replaceAll('"', '""'
 function StaffContent() {
   const { user, loading } = useAuth();
   const utils = trpc.useUtils();
-  const overview = trpc.staff.overview.useQuery(undefined, { enabled: Boolean(user?.role === "admin"), refetchInterval: 5000 });
+  const overview = trpc.staff.overview.useQuery(undefined, { enabled: Boolean(user?.role === "admin" || user?.role === "teacher"), refetchInterval: 5000 });
   const queue = trpc.staff.moderationQueue.useQuery(undefined, { enabled: Boolean(user?.role === "admin"), refetchInterval: 5000 });
   const exportResults = trpc.staff.exportResults.useQuery(undefined, { enabled: false });
   const [notes, setNotes] = useState<Record<number, string>>({});
@@ -28,12 +29,20 @@ function StaffContent() {
   const [teacherEmail, setTeacherEmail] = useState("");
   const [teacherSection, setTeacherSection] = useState<"boys" | "girls" | "all">("boys");
   const [participantSearch, setParticipantSearch] = useState("");
+  const [launchClassId, setLaunchClassId] = useState("");
+  const [qrCodeUrl, setQrCodeUrl] = useState("");
   const teacherAccess = trpc.staff.teacherAccess.useQuery(undefined, { enabled: Boolean(user?.role === "admin") });
+  const classGroups = trpc.event.classGroups.useQuery(user?.staffSection && user.staffSection !== "all" ? { eventSection: user.staffSection } : undefined, { enabled: Boolean(user?.role === "admin" || user?.role === "teacher") });
 
   useEffect(() => {
     if (!overview.data) return;
     setDrafts(Object.fromEntries(overview.data.activities.map(activity => [activity.id, { url: activity.resourceUrl ?? "", label: activity.resourceLabel ?? "" }])));
   }, [overview.data]);
+  useEffect(() => {
+    if (!launchClassId) { setQrCodeUrl(""); return; }
+    const joinUrl = `${window.location.origin}/?class=${launchClassId}`;
+    QRCode.toDataURL(joinUrl, { margin: 1, width: 248, color: { dark: "#102d59", light: "#ffffff" } }).then(setQrCodeUrl).catch(() => setQrCodeUrl(""));
+  }, [launchClassId]);
 
   const refreshEventViews = () => {
     utils.staff.overview.invalidate();
@@ -66,8 +75,10 @@ function StaffContent() {
 
   const totals = overview.data?.totals;
   const visibleParticipants = overview.data?.participants.filter(participant => `${participant.displayName} ${participant.gradeBand} ${participant.eventSection}`.toLowerCase().includes(participantSearch.trim().toLowerCase())) ?? [];
+  const joinUrl = launchClassId ? `${window.location.origin}/?class=${launchClassId}` : "";
   return <div className="staff-content">
     <div className="staff-heading"><div><p className="section-kicker">The First Academy School · ICT Department</p><h1>Welcome Day <em>Control Room</em></h1><p>Manage {user.staffSection === "all" ? "all event sections" : `${user.staffSection} section`} results, monitor participation, and keep the shared display ready.</p></div><a href={user.staffSection === "all" ? "/live" : `/live?section=${user.staffSection}`} target="_blank" rel="noreferrer" className="staff-display-link"><MonitorUp size={17} /> Open display wall <ExternalLink size={14} /></a></div>
+    <section className="staff-section staff-results-tools"><div className="staff-section__heading"><div><p className="section-kicker">Start a class safely</p><h2>Open one class QR session</h2></div><span>Students scan; they never choose a teacher or class</span></div><div className="resource-fields"><div><Label htmlFor="class-launcher">Your class</Label><select id="class-launcher" value={launchClassId} onChange={event => setLaunchClassId(event.target.value)}><option value="">Choose a class to open</option>{classGroups.data?.map(group => <option key={group.id} value={group.id}>{group.label}</option>)}</select></div>{launchClassId && <a className="staff-display-link" href={joinUrl} target="_blank" rel="noreferrer"><ExternalLink size={17} /> Open student join link</a>}</div>{qrCodeUrl && <div className="staff-empty"><img src={qrCodeUrl} width={248} height={248} alt="Class session QR code for students to scan" /><p><strong>Show this code to your class.</strong> Students will enter only their name and grade group; the class is assigned automatically.</p></div>}</section>
     <section className="staff-stat-grid"><div><UsersRound size={19} /><strong>{totals?.participants ?? 0}</strong><span>Participants</span></div><div><ClipboardCheck size={19} /><strong>{totals?.completions ?? 0}</strong><span>Subject results</span></div><div><FileText size={19} /><strong>{totals?.pendingSubmissions ?? 0}</strong><span>Awaiting review</span></div><div><Sparkles size={19} /><strong>{totals?.activeActivities ?? 0}</strong><span>Active subjects</span></div></section>
     <section className="staff-section staff-results-tools"><div className="staff-section__heading"><div><p className="section-kicker">Event-day essentials</p><h2>Results management</h2></div><span>Staff-only controls</span></div><div className="staff-results-tools__grid"><div><Download size={22} /><h3>Export current results</h3><p>Download a CSV with student name, grade band, subject, score, points, and completion time.</p><Button className="navy-button" disabled={exportResults.isFetching} onClick={downloadResults}>{exportResults.isFetching ? <Loader2 className="animate-spin" size={16} /> : <Download size={16} />} Export CSV</Button></div><div className="staff-reset-card"><ShieldAlert size={22} /><h3>Reset subject results</h3><p>Clears the five subject-quiz scores from the board and learning records. Student names and access codes are retained.</p><AlertDialog open={resetOpen} onOpenChange={setResetOpen}><AlertDialogTrigger asChild><Button variant="outline" className="reset-button"><RotateCcw size={16} /> Reset results</Button></AlertDialogTrigger><AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Reset all subject results?</AlertDialogTitle><AlertDialogDescription>This cannot be undone. Type <strong>RESET RESULTS</strong> to clear completed subject quizzes while keeping student records and access codes.</AlertDialogDescription></AlertDialogHeader><Label htmlFor="result-reset-confirmation">Confirmation phrase</Label><Input id="result-reset-confirmation" value={resetConfirmation} onChange={event => setResetConfirmation(event.target.value)} placeholder="RESET RESULTS" autoComplete="off" /><AlertDialogFooter><AlertDialogCancel disabled={resetResults.isPending}>Cancel</AlertDialogCancel><Button className="reset-confirm-button" disabled={resetConfirmation !== "RESET RESULTS" || resetResults.isPending} onClick={() => resetResults.mutate({ confirmation: "RESET RESULTS" })}>{resetResults.isPending ? <Loader2 className="animate-spin" size={16} /> : <RotateCcw size={16} />} Clear subject results</Button></AlertDialogFooter></AlertDialogContent></AlertDialog></div></div><a className="staff-projector-link" href="/live?projector=1" target="_blank" rel="noreferrer"><MonitorUp size={17} /><span><strong>Open protected projector display</strong><small>This display shortcut works only for signed-in event administrators.</small></span><Maximize2 size={16} /></a></section>
     {user.role === "admin" && <section className="staff-section"><div className="staff-section__heading"><div><p className="section-kicker">Individual teacher sign-in</p><h2>Teacher access</h2></div><span>Assign a school email to a section</span></div><div className="resource-fields"><div><Label htmlFor="teacher-access-email">Teacher school email</Label><Input id="teacher-access-email" value={teacherEmail} onChange={event => setTeacherEmail(event.target.value)} placeholder="teacher@school.ae" type="email" /></div><div><Label htmlFor="teacher-access-section">Control-room scope</Label><select id="teacher-access-section" value={teacherSection} onChange={event => setTeacherSection(event.target.value as typeof teacherSection)}><option value="boys">Boys section</option><option value="girls">Girls section</option><option value="all">All sections (administrator-level view)</option></select></div><Button className="navy-button" disabled={!teacherEmail.trim() || saveTeacherAccess.isPending} onClick={() => saveTeacherAccess.mutate({ email: teacherEmail, staffSection: teacherSection })}>{saveTeacherAccess.isPending ? <Loader2 className="animate-spin" size={16} /> : <ShieldCheck size={16} />} Save teacher access</Button></div><div className="participant-control-list">{teacherAccess.data?.map(grant => <article className="participant-control-row" key={grant.id}><div><h3>{grant.email}</h3><p>{grant.staffSection} section scope · {grant.isActive ? "Active" : "Paused"}</p></div><Button size="sm" variant={grant.isActive ? "outline" : "default"} className={grant.isActive ? "hide-button" : "approve-button"} disabled={setTeacherAccessStatus.isPending} onClick={() => setTeacherAccessStatus.mutate({ id: grant.id, isActive: !Boolean(grant.isActive) })}>{grant.isActive ? "Pause access" : "Restore access"}</Button></article>) ?? <div className="staff-empty"><ShieldCheck size={24} /><p>Add each teacher’s school email to give them their own sign-in access.</p></div>}</div></section>}

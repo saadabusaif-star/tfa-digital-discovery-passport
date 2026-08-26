@@ -355,6 +355,14 @@ export async function listClassGroups(eventSection?: "boys" | "girls") {
   return db.select().from(classGroups).where(eventSection ? and(eq(classGroups.isActive, 1), eq(classGroups.eventSection, eventSection)) : eq(classGroups.isActive, 1)).orderBy(classGroups.teacherSlot, classGroups.label);
 }
 
+export async function getClassSession(classGroupId: number) {
+  await ensureClassGroups();
+  const db = await requireDb();
+  const classGroup = await db.select({ id: classGroups.id, eventSection: classGroups.eventSection }).from(classGroups).where(and(eq(classGroups.id, classGroupId), eq(classGroups.isActive, 1))).limit(1);
+  if (!classGroup[0]) throw new Error("This class session is not available. Please scan your teacher's current QR code.");
+  return classGroup[0];
+}
+
 export async function createParticipant(input: { displayName: string; gradeBand: "6-7" | "8-9" | "10-12"; eventSection: "boys" | "girls"; classGroupId: number }) {
   const db = await requireDb();
   const classGroup = await db.select().from(classGroups).where(and(eq(classGroups.id, input.classGroupId), eq(classGroups.isActive, 1))).limit(1);

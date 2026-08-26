@@ -8,6 +8,7 @@ import {
   completeActivity,
   createCreativeSubmission,
   createParticipant,
+  getClassSession,
   getLiveBoard,
   listTeacherAccessGrants,
   getModerationQueue,
@@ -56,6 +57,7 @@ export const appRouter = router({
   event: router({
     activities: publicProcedure.query(() => listActivities()),
     classGroups: publicProcedure.input(z.object({ eventSection: z.enum(["boys", "girls"]).optional() }).optional()).query(({ input }) => listClassGroups(input?.eventSection)),
+    classSession: publicProcedure.input(z.object({ classGroupId: z.number().int().positive() })).query(({ input }) => getClassSession(input.classGroupId)),
     join: publicProcedure.input(z.object({
       displayName: z.string().trim().min(2, "Please enter at least 2 characters.").max(80),
       gradeBand: z.enum(["6-7", "8-9", "10-12"]),

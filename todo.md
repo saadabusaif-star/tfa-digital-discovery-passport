@@ -167,3 +167,8 @@
 - [ ] Filter teacher record search, class live boards, results exports, and participant controls by the assigned class, preventing names from mixing.
 - [ ] Add simple administrator controls to create, rename, assign, and pause class groups for each teacher.
 - [ ] Verify that class records and class live boards remain isolated across multiple teachers and class groups.
+
+- [x] Remove all teacher and class selection controls from the public student record form.
+- [x] Add a protected teacher class launcher that selects one assigned class and produces a shareable QR-link session.
+- [x] Auto-assign students scanning a teacher class link to that class while still asking only for their name and grade group.
+- [x] Verify the student QR join view is short, touch-friendly, and never reveals teacher or other-class data.
