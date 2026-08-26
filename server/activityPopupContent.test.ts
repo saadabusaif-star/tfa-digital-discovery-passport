@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { SUBJECT_QUIZZES } from "../client/src/lib/subjectQuiz";
+import { ICT_DISPLAY_CHALLENGE, SUBJECT_QUIZZES } from "../client/src/lib/subjectQuiz";
 
 describe("subject quiz content", () => {
   it("contains the five supplied school subject sections", () => {
@@ -22,5 +22,12 @@ describe("subject quiz content", () => {
       ["C) 11", "A) Running", "B) To prepare the body and reduce injury risk"],
       ["C) Asia", "D) Pacific Ocean", "D) Russia"],
     ]);
+  });
+
+  it("keeps the poster-inspired ICT Display Quest separate from the five supplied subjects", () => {
+    expect(ICT_DISPLAY_CHALLENGE.title).toBe("ICT Display Quest");
+    expect(ICT_DISPLAY_CHALLENGE.questions.map(question => question.level)).toEqual(["Easy", "Medium", "Hard"]);
+    expect(ICT_DISPLAY_CHALLENGE.questions.map(question => question.answer)).toEqual(["A) Sharing information and connecting digitally", "C) Ctrl + N", "B) Virtual reality (VR)"]);
+    expect(SUBJECT_QUIZZES).toHaveLength(5);
   });
 });

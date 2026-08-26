@@ -222,6 +222,7 @@ const SUBJECT_QUIZ_CATALOG = [
   { slug: "stem-quiz", title: "STEM", zone: "play" as const, kind: "quiz" as const, summary: "Test your knowledge of computers, storage, and algorithms.", instructions: "Answer three questions: easy, medium, and hard.", resourceUrl: null, resourceLabel: null, points: 30, badgeKey: "stem-builder", badgeName: "STEM Builder", gradeHint: "Easy · Medium · Hard", displayOrder: 3 },
   { slug: "pe-quiz", title: "Physical Education", zone: "connect" as const, kind: "quiz" as const, summary: "Think about football, fitness, and staying ready to move.", instructions: "Answer three questions: easy, medium, and hard.", resourceUrl: null, resourceLabel: null, points: 30, badgeKey: "active-ace", badgeName: "Active Ace", gradeHint: "Easy · Medium · Hard", displayOrder: 4 },
   { slug: "geography-quiz", title: "Geography", zone: "discover" as const, kind: "quiz" as const, summary: "Travel through continents, oceans, and the world map.", instructions: "Answer three questions: easy, medium, and hard.", resourceUrl: null, resourceLabel: null, points: 30, badgeKey: "world-wise", badgeName: "World Wise", gradeHint: "Easy · Medium · Hard", displayOrder: 5 },
+  { slug: "ict-display-challenge", title: "ICT Display Quest", zone: "play" as const, kind: "quiz" as const, summary: "A poster-inspired bonus challenge using ICT, Computing, and keyboard-shortcut display clues.", instructions: "Use the three classroom displays to answer three quick ICT questions.", resourceUrl: null, resourceLabel: null, points: 30, badgeKey: "display-detective", badgeName: "Display Detective", gradeHint: "Poster challenge · 3 quick questions", displayOrder: 6 },
 ];
 
 const SUBJECT_QUIZ_ANSWERS: Record<string, string[]> = {
@@ -230,6 +231,7 @@ const SUBJECT_QUIZ_ANSWERS: Record<string, string[]> = {
   "stem-quiz": ["A) Central Processing Unit", "C) SSD", "B) A step-by-step solution to a problem"],
   "pe-quiz": ["C) 11", "A) Running", "B) To prepare the body and reduce injury risk"],
   "geography-quiz": ["C) Asia", "D) Pacific Ocean", "D) Russia"],
+  "ict-display-challenge": ["A) Sharing information and connecting digitally", "C) Ctrl + N", "B) Virtual reality (VR)"],
 };
 
 export const LIVE_POLL_PROMPTS = [

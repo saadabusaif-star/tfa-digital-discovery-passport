@@ -90,4 +90,11 @@
 - [x] Add a clear subject-by-subject leaderboard to the live classroom board.
 - [x] Add a safeguarded projector shortcut suitable for event staff, without exposing controls to students.
 - [ ] Verify the new welcome, leaderboard, and projector shortcut across responsive student and display views, then save a final checkpoint.
+- [ ] Blocked pending administrator sign-in: open the staff projector shortcut and confirm `/live?projector=1` launches and exits projector mode before final handoff.
+- [x] Review the supplied ICT display resources and distill them into an age-appropriate Welcome Day activity.
+- [x] Add an interactive ICT display challenge that visibly uses concepts from the supplied computing banner, keyboard-shortcut posters, and ICT poster.
+- [x] Revise the Computing Quick Skills prompts so each supplied display resource contributes a clear visual clue or question concept.
+- [x] Integrate the new activity into the student flow with responsive presentation, scoring, and live-result publication where appropriate.
+- [x] Complete ICT Display Quest at an explicitly confirmed phone or tablet viewport, then verify its bonus card, personal record entry, live-board row, and cleanup.
+- [x] Verify the new display-resource activity end to end and save an updated checkpoint.
 - [x] Verify the administrator projector shortcut in a signed-in staff session, or document the administrator-credential blocker before the final checkpoint.
