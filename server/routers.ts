@@ -21,13 +21,13 @@ import { storagePut } from "./storage";
 
 const passportCode = z.string().trim().regex(/^TFA-[A-Z0-9]{6}$/, "Enter a valid passport code.");
 const activitySlug = z.string().trim().min(2).max(64);
-const approvedMimeTypes = new Set(["image/png", "image/jpeg", "image/webp", "application/pdf"]);
+const approvedMimeTypes = new Set(["image/png", "image/jpeg", "image/webp", "image/gif", "video/mp4", "video/webm", "application/pdf"]);
 
 function decodeUpload(dataBase64: string, mimeType: string) {
-  if (!approvedMimeTypes.has(mimeType)) throw new Error("Please upload a PNG, JPEG, WebP image, or PDF only.");
+  if (!approvedMimeTypes.has(mimeType)) throw new Error("Please upload an approved image, GIF, short MP4/WebM video, or PDF only.");
   const raw = dataBase64.includes(",") ? dataBase64.split(",").pop() ?? "" : dataBase64;
   const buffer = Buffer.from(raw, "base64");
-  if (!buffer.length || buffer.byteLength > 4 * 1024 * 1024) throw new Error("Evidence files must be smaller than 4 MB.");
+  if (!buffer.length || buffer.byteLength > 8 * 1024 * 1024) throw new Error("Evidence files must be smaller than 8 MB.");
   return buffer;
 }
 
@@ -86,7 +86,11 @@ export const appRouter = router({
       });
       return { success: true } as const;
     }),
-    vote: publicProcedure.input(z.object({ accessCode: passportCode, optionText: z.string().trim().min(2).max(160) })).mutation(({ input }) => castVote(input)),
+    vote: publicProcedure.input(z.object({
+      accessCode: passportCode,
+      optionText: z.string().trim().min(2).max(160),
+      promptKey: z.enum(["future-tech", "timetable-pulse", "elective-pulse"]).optional(),
+    })).mutation(({ input }) => castVote(input)),
     liveBoard: publicProcedure.query(() => getLiveBoard()),
   }),
   staff: router({

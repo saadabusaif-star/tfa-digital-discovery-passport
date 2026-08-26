@@ -34,4 +34,24 @@
 - [x] Add complete multi-question content and appropriate game interactions for every activity type.
 - [x] Redesign all student activity pop-ups with a consistent friendly challenge layout, progress states, and feedback.
 - [x] Preserve creative submission, reflection, and voting tasks inside the redesigned pop-up experience.
-- [ ] Test all pop-up challenge flows and save an updated checkpoint.
+- [x] Test all pop-up challenge flows and save an updated checkpoint.
+- [x] Verify each quiz, puzzle, safety, timeline, QR, creative, reflection, and voting pop-up with a participant passport.
+- [x] Confirm question progression, validation feedback, submissions, votes, and resulting passport or live-wall updates across activity types.
+- [x] Exercise the Cyber Safety, Code Breaker, Tech Timeline, QR, creative, reflection, and vote pop-ups with a temporary active participant.
+- [x] Verify mission completion, moderated submission, vote persistence, and live-result updates outside the Welcome Quiz flow.
+- [x] Verify the QR Quest mission input and completion path with an active temporary participant.
+- [x] Submit one creative or reflection response, approve it through staff controls, and verify it on the live wall.
+- [x] Cast a Future Tech Vote and verify its persisted result on the live wall.
+- [ ] Approve a pending creative submission through the actual staff moderation interface and verify the resulting approved state.
+- [x] Add narrow, readable progress indicators to the main challenge cards and all activity pop-ups.
+- [x] Make the pending-moderation message clear and student-friendly after creative work is submitted.
+- [x] Add Cyber Escape, Debug Station, Pixel Puzzle, and Tech Charades or GIF Creator game activities.
+- [x] Add tablet interactions for password safety riddles, block/Python bug identification, pixel-art uploads, and short media submissions.
+- [x] Add Mentimeter-style live icebreaker polling with an auto-updating big-screen results area.
+- [x] Add student welcome questions about timetable, elective subjects, a project or activity plan, and school rules.
+- [x] Test the expanded games, polls, progress indicators, and student-question flows.
+- [ ] Save a checkpoint for the expanded welcome-day experience.
+- [x] Exercise the Welcome Pulse student-question activity with a participant passport and verify its submission state.
+- [x] Cast an icebreaker poll vote from the main page and verify its result on the live wall.
+- [x] Verify narrow progress indicators during a live activity interaction.
+- [x] Fix icebreaker poll vote retrieval on the live wall and reverify the big-screen result.

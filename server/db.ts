@@ -154,13 +154,82 @@ const EVENT_ACTIVITY_CATALOG = [
     gradeHint: "A quick, meaningful collective choice",
     displayOrder: 9,
   },
+  {
+    slug: "debug-station",
+    title: "Debug Station: Find the Bugs",
+    zone: "play" as const,
+    kind: "puzzle" as const,
+    summary: "Inspect block or Python-style code, spot three bugs, and type the line numbers to unlock the clue.",
+    instructions: "Grades 6–7 can use the block-code clue; Grades 8–12 can inspect the Python-style version. Enter the three faulty line numbers.",
+    resourceUrl: "https://drive.google.com/drive/folders/136zYQAFyX131S_B8nX2wOO7o77RbaIZt?usp=sharing",
+    resourceLabel: "Teacher debug-code prompts",
+    points: 15,
+    badgeKey: "bug-buster",
+    badgeName: "Bug Buster",
+    gradeHint: "Scratch-style clues for Grades 6–7; Python logic for Grades 8–12",
+    displayOrder: 10,
+  },
+  {
+    slug: "pixel-puzzle",
+    title: "Pixel Puzzle: Future School",
+    zone: "create" as const,
+    kind: "creative" as const,
+    summary: "Create pixel art of the future of our school using a limited colour palette.",
+    instructions: "Use an approved drawing app or tablet canvas. Upload the image or briefly explain the design for gallery review.",
+    resourceUrl: "https://drive.google.com/drive/folders/136zYQAFyX131S_B8nX2wOO7o77RbaIZt?usp=sharing",
+    resourceLabel: "Teacher pixel-art prompt",
+    points: 20,
+    badgeKey: "pixel-pioneer",
+    badgeName: "Pixel Pioneer",
+    gradeHint: "Try an 8×8 grid first; advanced learners can build a 16×16 scene",
+    displayOrder: 11,
+  },
+  {
+    slug: "tech-charades",
+    title: "Tech Charades: GIF Creator",
+    zone: "connect" as const,
+    kind: "creative" as const,
+    summary: "Act out a technology term, create a three-frame GIF or short video, and share it for the digital board.",
+    instructions: "Choose a term such as Wi-Fi, robot, algorithm, or virtual reality. Upload a short, school-suitable GIF or video for moderation.",
+    resourceUrl: "https://drive.google.com/drive/folders/136zYQAFyX131S_B8nX2wOO7o77RbaIZt?usp=sharing",
+    resourceLabel: "Teacher charades terms",
+    points: 20,
+    badgeKey: "tech-performer",
+    badgeName: "Tech Performer",
+    gradeHint: "Work in small teams and keep recordings to five seconds",
+    displayOrder: 12,
+  },
+  {
+    slug: "welcome-year-pulse",
+    title: "Welcome Pulse: Your Year Ahead",
+    zone: "connect" as const,
+    kind: "reflection" as const,
+    summary: "Share your project ideas, elective interests, timetable hopes, and one school rule you already know.",
+    instructions: "Complete four quick welcome questions. Staff can review suitable responses for the live student-voice display.",
+    resourceUrl: "https://drive.google.com/drive/folders/136zYQAFyX131S_B8nX2wOO7o77RbaIZt?usp=sharing",
+    resourceLabel: "Teacher welcome-prompt guide",
+    points: 10,
+    badgeKey: "school-starter",
+    badgeName: "School Starter",
+    gradeHint: "A quick way to share your plans for the year",
+    displayOrder: 13,
+  },
 ];
+
+export const LIVE_POLL_PROMPTS = [
+  { key: "future-tech", eyebrow: "Future Tech Vote", title: "Skills students want", question: "Which ICT skill would you most like to develop this year?" },
+  { key: "timetable-pulse", eyebrow: "Welcome Live Poll", title: "Timetable priorities", question: "Which timetable detail would you like to understand first?" },
+  { key: "elective-pulse", eyebrow: "Welcome Live Poll", title: "Electives students are curious about", question: "Which ICT elective interests you most this year?" },
+] as const;
+
+export const LIVE_POLL_KEYS = LIVE_POLL_PROMPTS.map(prompt => prompt.key);
 
 const VALIDATED_ACTIVITY_ANSWERS: Record<string, string> = {
   "welcome-quiz": "Check, create, and be kind online",
-  "cyber-escape": "Check the sender and tell a trusted adult",
+  "cyber-escape": "T3@m0n@1!",
   "code-breaker": "CREATE",
   "tech-timeline": "Internet → Smartphone → AI tools",
+  "debug-station": "2,4,6",
 };
 
 export async function getDb() {
@@ -317,10 +386,12 @@ export async function createCreativeSubmission(input: {
   });
 }
 
-export async function castVote(input: { accessCode: string; optionText: string }) {
+export async function castVote(input: { accessCode: string; optionText: string; promptKey?: string }) {
   const db = await requireDb();
   const participant = await getParticipantByCode(input.accessCode);
-  await db.insert(votes).values({ participantId: participant.id, promptKey: "future-tech", optionText: input.optionText }).onDuplicateKeyUpdate({
+  const promptKey = input.promptKey ?? "future-tech";
+  if (!LIVE_POLL_KEYS.includes(promptKey as (typeof LIVE_POLL_KEYS)[number])) throw new Error("That live-poll question is not available.");
+  await db.insert(votes).values({ participantId: participant.id, promptKey, optionText: input.optionText }).onDuplicateKeyUpdate({
     set: { optionText: input.optionText, createdAt: new Date() },
   });
 }
@@ -337,7 +408,7 @@ export async function getLiveBoard() {
       .leftJoin(activities, eq(submissions.activityId, activities.id))
       .where(eq(submissions.status, "approved"))
       .orderBy(desc(submissions.reviewedAt)),
-    db.select().from(votes).where(eq(votes.promptKey, "future-tech")),
+    db.select().from(votes),
   ]);
   const visibleParticipantIds = participantRows.map(participant => participant.id);
   const visibleCompletions = completionRows.filter(item => visibleParticipantIds.includes(item.participantId));
@@ -355,15 +426,19 @@ export async function getLiveBoard() {
       badges: personCompletions.map(completion => activityRows.find(activity => activity.id === completion.activityId)?.badgeName).filter((badge): badge is string => Boolean(badge)),
     };
   }).sort((a, b) => b.points - a.points || b.completedCount - a.completedCount).slice(0, 8);
-  const voteCounts = voteRows.reduce<Record<string, number>>((accumulator, vote) => {
-    accumulator[vote.optionText] = (accumulator[vote.optionText] ?? 0) + 1;
-    return accumulator;
-  }, {});
+  const votesForPrompt = (promptKey: string) => {
+    const counts = voteRows.filter(vote => vote.promptKey === promptKey).reduce<Record<string, number>>((accumulator, vote) => {
+      accumulator[vote.optionText] = (accumulator[vote.optionText] ?? 0) + 1;
+      return accumulator;
+    }, {});
+    return Object.entries(counts).map(([option, count]) => ({ option, count })).sort((a, b) => b.count - a.count);
+  };
   const totalPoints = visibleCompletions.reduce((sum, completion) => sum + completion.awardedPoints, 0);
   return {
     participants: participantScores,
     totals: { participantCount: participantRows.length, completionCount: visibleCompletions.length, totalPoints, activityCount: activityRows.length },
-    votes: Object.entries(voteCounts).map(([option, count]) => ({ option, count })).sort((a, b) => b.count - a.count),
+    votes: votesForPrompt("future-tech"),
+    icebreakerPolls: LIVE_POLL_PROMPTS.filter(prompt => prompt.key !== "future-tech").map(prompt => ({ ...prompt, votes: votesForPrompt(prompt.key) })),
     words: approvedSubmissions.filter(item => item.submission.kind === "reflection" && item.submission.body).slice(0, 24).map(item => item.submission.body as string),
     recentWork: approvedSubmissions.filter(item => item.submission.kind !== "reflection").slice(0, 8).map(item => ({
       id: item.submission.id,

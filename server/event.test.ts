@@ -69,8 +69,14 @@ describe("Digital Discovery Passport event procedures", () => {
       accessCode: "TFA-ABC123",
       kind: "pixel-art",
       upload: { dataBase64: "data:text/plain;base64,SGVsbG8=", fileName: "unsafe.txt", mimeType: "text/plain" },
-    })).rejects.toThrow("Please upload a PNG, JPEG, WebP image, or PDF only.");
+    })).rejects.toThrow("Please upload an approved image, GIF, short MP4/WebM video, or PDF only.");
     expect(storageMocks.storagePut).not.toHaveBeenCalled();
+  });
+
+  it("routes a welcome-day icebreaker vote with its approved prompt key", async () => {
+    const caller = appRouter.createCaller(createContext());
+    await caller.event.vote({ accessCode: "TFA-ABC123", optionText: "My class times", promptKey: "timetable-pulse" });
+    expect(dbMocks.castVote).toHaveBeenCalledWith({ accessCode: "TFA-ABC123", optionText: "My class times", promptKey: "timetable-pulse" });
   });
 
   it("allows only administrators to moderate submitted work", async () => {
