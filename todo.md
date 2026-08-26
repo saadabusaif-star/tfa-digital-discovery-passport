@@ -139,3 +139,9 @@
 - [x] Test the new activity interactions, navigation shortcuts, and desktop plus 390×844 mobile presentation, then save an updated checkpoint.
 
 - [x] Exercise activity shortcuts, Tech Wheel spin, Human-or-AI choice, Future 2040 selector, and Photo Corner sign switching on desktop and 390×844 mobile, then checkpoint the completed attraction deck.
+
+- [x] Reorder the student Welcome Day page so the Class of 2040 career-card experience is the first primary activity section.
+- [x] Redesign section bars, headings, and responsive font sizing so student activities are easier to scan and use on touch devices.
+- [x] Make activity-shortcut activation visibly immediate, with an in-page destination indicator or focused section state that does not require students to infer the scroll result.
+- [x] Replace the long welcome overlay with concise, helpful entry guidance that does not obstruct the first activity unnecessarily.
+- [ ] Verify reordered activity navigation, visible shortcut feedback, overlay behavior, and desktop plus 390×844 mobile presentation before saving a new checkpoint.

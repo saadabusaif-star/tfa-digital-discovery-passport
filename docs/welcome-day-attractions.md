@@ -1,6 +1,8 @@
 # Welcome Day Attraction Deck
 
-The student home page now begins with a clickable **Explore the ICT Welcome Day** deck. Each shortcut uses smooth scrolling to move students to the corresponding activity: Spin the Tech Wheel, Human or AI?, Future 2040, the photo corner, ICT Display Quest, or the five subject studios.
+The student home page now opens directly to the learning route rather than displaying a blocking welcome popup. The **Class of 2040** future-career card is the first primary activity, so students can immediately select a technology field and see their result. A labeled activity deck follows it, with the Class of 2040 shortcut first.
+
+Each activity shortcut uses smooth scrolling and, at the instant it is pressed, updates an in-page **Now opening** message, marks the selected shortcut, applies a high-visibility focus frame to the destination section, and moves keyboard focus there after the scroll. Numbered section bars identify the activity purpose before every main card, while heading and control sizes scale up at desktop and remain touch-friendly at 390 × 844.
 
 | Activity | Student interaction | Student-facing outcome |
 |---|---|---|

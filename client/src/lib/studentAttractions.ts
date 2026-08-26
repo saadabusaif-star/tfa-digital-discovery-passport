@@ -50,9 +50,10 @@ export const PHOTO_CORNER_SIGNS = [
 ] as const;
 
 export const ACTIVITY_SHORTCUTS = [
+
+  { target: "future-2040", label: "Class of 2040", icon: "🚀" },
   { target: "tech-wheel", label: "Spin the Tech Wheel", icon: "🎡" },
   { target: "human-or-ai", label: "Human or AI?", icon: "🖼️" },
-  { target: "future-2040", label: "Future 2040", icon: "🚀" },
   { target: "photo-corner", label: "Photo corner", icon: "📸" },
   { target: "ict-display-quest", label: "ICT Display Quest", icon: "⌨" },
   { target: "subjects", label: "Subject studios", icon: "🏆" },

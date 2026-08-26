@@ -13,6 +13,7 @@ describe("student Welcome Day attractions", () => {
     expect(FUTURE_CAREERS).toHaveLength(7);
     expect(PHOTO_CORNER_SIGNS).toHaveLength(5);
     expect(new Set(ACTIVITY_SHORTCUTS.map(shortcut => shortcut.target)).size).toBe(ACTIVITY_SHORTCUTS.length);
+    expect(ACTIVITY_SHORTCUTS[0]).toMatchObject({ target: "future-2040", label: "Class of 2040" });
   });
 
   it("resolves every Tech Wheel position to a defined challenge", () => {
