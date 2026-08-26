@@ -84,3 +84,5 @@
 - [x] Add a distraction-free full-screen projector mode for the named live results board.
 - [x] Add staff-only controls to export current results and reset event results with clear safeguards.
 - [ ] Verify artwork, projector mode, staff controls, and responsive five-subject quiz behavior, then save a final checkpoint.
+- [x] Complete one post-enhancement subject quiz at an explicitly confirmed phone or tablet viewport and confirm the illustrated cards, scoring, personal record, and live-board publication still work.
+- [x] Exercise the staff export and reset controls in an authenticated admin session, or document the credential-access blocker before the final checkpoint.
