@@ -17,18 +17,19 @@ export function UaeFlag() {
 export function EventHeader({ compact = false }: { compact?: boolean }) {
   return (
     <header className={compact ? "event-header compact" : "event-header"}>
-      <div className="event-header__utility container">
+      <div className="event-header__utility event-header__utility--impact container">
         <div className="brand-side brand-side--left">
           <UaeFlag />
-          <div className="hidden sm:block">
-            <p className="utility-kicker">United Arab Emirates</p>
+          <div className="school-brand-text">
+            <p className="utility-kicker">United Arab Emirates · Sharjah</p>
             <p className="utility-label">The First Academy School</p>
+            <span>ICT Department · Welcome Day 2026</span>
           </div>
         </div>
         <div className="brand-side brand-side--right">
-          <div className="hidden sm:block text-right">
-            <p className="utility-kicker">2026 Welcome Day</p>
-            <p className="utility-label">ICT Department</p>
+          <div className="department-chip">
+            <p>GRADES</p>
+            <strong>6–12</strong>
           </div>
           <img className="school-logo" src={logoUrl} alt="The First Academy School logo" />
         </div>
@@ -36,7 +37,7 @@ export function EventHeader({ compact = false }: { compact?: boolean }) {
       {!compact && (
         <div className="container event-header__main">
           <Link href="/" className="event-wordmark">
-            <span className="event-wordmark__eyebrow">ICT Welcome Day</span>
+            <span className="event-wordmark__eyebrow">The First Academy · ICT Experience</span>
             <span className="event-wordmark__title">Digital Discovery <em>Passport</em></span>
           </Link>
           <nav className="event-nav" aria-label="Event navigation">

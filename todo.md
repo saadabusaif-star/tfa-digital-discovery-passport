@@ -50,8 +50,15 @@
 - [x] Add Mentimeter-style live icebreaker polling with an auto-updating big-screen results area.
 - [x] Add student welcome questions about timetable, elective subjects, a project or activity plan, and school rules.
 - [x] Test the expanded games, polls, progress indicators, and student-question flows.
-- [ ] Save a checkpoint for the expanded welcome-day experience.
+- [x] Save a checkpoint for the expanded welcome-day experience.
 - [x] Exercise the Welcome Pulse student-question activity with a participant passport and verify its submission state.
 - [x] Cast an icebreaker poll vote from the main page and verify its result on the live wall.
 - [x] Verify narrow progress indicators during a live activity interaction.
 - [x] Fix icebreaker poll vote retrieval on the live wall and reverify the big-screen result.
+- [x] Replace the current landing-page structure with a contemporary, high-impact school-event presentation.
+- [x] Enlarge and clarify the UAE flag, The First Academy School logo, and primary school-event typography.
+- [x] Rework game, passport, poll, and live-result sections into a more modern, easy-to-scan hierarchy.
+- [x] Verify the contemporary redesign on desktop and tablet displays.
+- [ ] Save a checkpoint for the contemporary visual redesign.
+- [x] Rework the passport and live-wall component structures to match the contemporary event-site hierarchy.
+- [x] Verify the contemporary landing page, passport, and live wall on both desktop and tablet displays.
