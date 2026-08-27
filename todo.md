@@ -215,3 +215,7 @@
 - [x] Verify the simplified entry and compact student journey at phone, tablet, and desktop sizes, then checkpoint the update.
 - [x] Add clear hover, keyboard-focus, and touch-press feedback to the compact ICT studio choices, primary actions, and expandable Welcome Day panels.
 - [x] Verify the interaction polish at desktop and phone sizes, then checkpoint the update.
+- [x] Add a clear friendly success state and subtle reduced-motion-safe confetti when a student completes an ICT quiz.
+- [x] Add an uncluttered How it works pop-over near the top of the student journey.
+- [x] Add safe print and download actions for a student's own saved class details and ICT results.
+- [x] Verify the completion, guidance, and personal-output flows at phone and desktop sizes, then checkpoint the update.
