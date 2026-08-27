@@ -225,3 +225,6 @@
 - [x] Audit and refine fonts, text hierarchy, and student-facing wording from the official header through the footer on every active page.
 - [x] Verify all public and staff routes, and document the current score-management access path and its security scope.
 - [x] Validate the sitewide typographic refinement at phone and desktop sizes, then checkpoint the update.
+- [x] Add Staff Control Room search, flexible class-section filtering, and student sorting without exposing results outside the signed-in staff scope.
+- [x] Add staff dashboard metrics for total submissions and average quiz score, based on current authorised data.
+- [x] Add regression tests and verify the staff dashboard at phone and desktop sizes, then checkpoint the update.
