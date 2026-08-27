@@ -1,5 +1,5 @@
 export const STUDENT_NAVIGATION = [
-  { label: "ICT studios", href: "/#subjects", icon: "trophy" },
+  { label: "ICT studios", href: "/#ict-studios", icon: "trophy" },
   { label: "My record", href: "/passport", icon: "record" },
   { label: "Live board", href: "/live", icon: "live" },
 ] as const;

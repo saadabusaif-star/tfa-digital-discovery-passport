@@ -219,3 +219,6 @@
 - [x] Add an uncluttered How it works pop-over near the top of the student journey.
 - [x] Add safe print and download actions for a student's own saved class details and ICT results.
 - [x] Verify the completion, guidance, and personal-output flows at phone and desktop sizes, then checkpoint the update.
+- [x] Add a compact visual submission-step illustration to the top How it works pop-over without increasing page clutter.
+- [x] Add a clean print-only school result-sheet header with a clearly labeled placeholder area for the official school logo.
+- [x] Verify the guided help and print layout at phone and desktop sizes, then checkpoint the update.

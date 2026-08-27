@@ -4,7 +4,7 @@ import { STUDENT_NAVIGATION, SUBJECT_STUDIO_COPY, UAE_WELCOME_GUIDANCE } from ".
 describe("student Welcome Day experience configuration", () => {
   it("keeps the three student destinations visible and correctly routed", () => {
     expect(STUDENT_NAVIGATION).toEqual([
-      { label: "ICT studios", href: "/#subjects", icon: "trophy" },
+      { label: "ICT studios", href: "/#ict-studios", icon: "trophy" },
       { label: "My record", href: "/passport", icon: "record" },
       { label: "Live board", href: "/live", icon: "live" },
     ]);
