@@ -75,3 +75,29 @@
 .join-station__class-field { grid-column:1/-1; }
 .join-station__class-field small { margin-top:2px; color:#a9c2da; font-size:10px; line-height:1.4; }
 @media (max-width:640px) { .join-station__class-field { grid-column:auto; }.grade-picker__trigger { min-height:46px; }.grade-picker__options button { min-height:42px; } }
+
+/* Compact viewport-fit treatment for every core screen, including opened quiz dialogs. */
+.welcome-main { padding-block:30px 42px; }
+.subject-lab { margin-top:34px; }
+.quiz-overlay { padding:12px; }
+.quiz-dialog { width:min(100%,590px); max-height:calc(100svh - 24px); display:grid; grid-template-rows:auto auto minmax(0,1fr) auto; }
+.quiz-dialog__head { padding:21px 55px 15px 22px; }
+.quiz-dialog__head h2 { font-size:26px; }
+.quiz-steps { padding:11px 22px 0; }
+.quiz-dialog__body { overflow-y:auto; padding:15px 22px 10px; }
+.quiz-dialog__prompt { margin-bottom:12px; font-size:19px; }
+.quiz-options { gap:6px; }.quiz-option { padding:9px; font-size:12px; }
+.quiz-dialog__actions { padding:11px 22px 16px; }
+.quiz-complete { padding:30px 22px 28px; }.quiz-complete h2 { font-size:58px; }.quiz-complete span { margin-bottom:15px; }
+.record-main,.live-main { max-width:1120px; padding-block:26px 40px; }
+.record-heading { margin:22px 0 17px; }.record-summary>div { min-height:104px; padding:17px; }.record-summary__metric strong { font-size:34px; }
+.record-results { margin-top:13px; padding:18px; }.record-results header { padding-bottom:13px; }.record-results__list { margin-top:12px; }.record-result { padding:10px; }
+.record-empty { min-height:250px; padding:22px; }
+.live-intro { padding:21px; }.live-intro h1 { margin:7px 0; font-size:clamp(32px,4.4vw,52px); }.live-metrics { gap:8px; margin:12px 0; }.live-metrics article { padding:14px; }.live-metrics strong { margin-top:6px; font-size:31px; }
+.live-leaderboard,.live-feed { padding:18px; }.live-leaderboard__grid { margin-top:12px; }.leader-card { min-height:96px; padding:10px; }.live-feed header { padding-bottom:12px; }.live-feed__list { margin-top:11px; }.live-feed__list article { padding:10px; }
+@media (max-width:640px) {
+  .welcome-main { padding-block:18px 30px; }.subject-lab { margin-top:26px; }
+  .quiz-overlay { align-items:end; padding:7px; }.quiz-dialog { max-height:calc(100svh - 14px); border-radius:14px; }.quiz-dialog__head { padding:17px 48px 12px 17px; }.quiz-dialog__head h2 { font-size:22px; }.quiz-steps { padding:9px 17px 0; }.quiz-dialog__body { padding:12px 17px 8px; }.quiz-dialog__prompt { font-size:17px; }.quiz-option { grid-template-columns:24px 1fr; gap:8px; min-height:38px; padding:7px; font-size:11px; }.quiz-option b { width:23px; height:23px; }.quiz-dialog__actions { padding:10px 17px 13px; }.quiz-complete { padding:23px 17px; }.quiz-complete h2 { font-size:48px; }
+  .record-main,.live-main { padding-block:19px 30px; }.record-summary>div { min-height:86px; padding:13px; }.record-summary__identity p { font-size:18px; }.record-summary__metric strong { font-size:29px; }.record-results,.live-leaderboard,.live-feed { padding:14px; }.record-empty { min-height:205px; }
+  .live-intro { padding:16px; }.live-metrics article { padding:12px; }.live-metrics strong { font-size:27px; }.leader-card { min-height:88px; padding:9px; }.live-feed__list article { padding:9px; }
+}
