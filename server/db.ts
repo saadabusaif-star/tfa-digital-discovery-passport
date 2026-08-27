@@ -363,15 +363,21 @@ export async function getClassSession(classGroupId: number) {
   return classGroup[0];
 }
 
-function normalizeClassLabel(value: string) {
-  const match = value.trim().replace(/\s+/g, " ").match(/^(boy|boys|girl|girls)\s+(6|7|8|9|10|11|12)\s*([a-z])$/i);
-  if (!match) throw new Error("Enter your section and class like Boy 7F or Girl 10A.");
-  const eventSection = match[1].toLowerCase().startsWith("boy") ? "boys" as const : "girls" as const;
-  const classLabel = `${eventSection === "boys" ? "Boy" : "Girl"} ${match[2]}${match[3].toUpperCase()}`;
+export function normalizeClassLabel(value?: string) {
+  const cleaned = value?.trim().replace(/\s+/g, " ") ?? "";
+  if (!cleaned) return { eventSection: "unassigned" as const, classLabel: null };
+
+  const match = cleaned.match(/^(?:(boy|boys|girl|girls)\s*)?(6|7|8|9|10|11|12)\s*([a-f])$/i);
+  if (!match) throw new Error("Enter a class code such as 7F or 10A. Adding Boy or Girl is optional.");
+
+  const section = match[1]?.toLowerCase();
+  const eventSection = section ? (section.startsWith("boy") ? "boys" as const : "girls" as const) : "unassigned" as const;
+  const classCode = `${match[2]}${match[3].toUpperCase()}`;
+  const classLabel = eventSection === "boys" ? `Boy ${classCode}` : eventSection === "girls" ? `Girl ${classCode}` : classCode;
   return { eventSection, classLabel };
 }
 
-export async function createParticipant(input: { displayName: string; gradeBand: "6-7" | "8-9" | "10-12"; classLabel: string }) {
+export async function createParticipant(input: { displayName: string; gradeBand: "6-7" | "8-9" | "10-12"; classLabel?: string }) {
   const db = await requireDb();
   const { eventSection, classLabel } = normalizeClassLabel(input.classLabel);
   const palette = ["gold", "coral", "teal", "violet"];

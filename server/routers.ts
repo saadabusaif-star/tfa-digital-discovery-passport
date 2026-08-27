@@ -58,7 +58,7 @@ export const appRouter = router({
     join: publicProcedure.input(z.object({
       displayName: z.string().trim().min(2, "Please enter at least 2 characters.").max(80),
       gradeBand: z.enum(["6-7", "8-9", "10-12"]),
-      classLabel: z.string().trim().min(5, "Enter your section and class, for example Boy 7F.").max(40),
+      classLabel: z.string().trim().max(40).optional(),
     })).mutation(({ input }) => createParticipant(input)),
     passport: publicProcedure.input(z.object({ accessCode: passportCode })).query(({ input }) => getPassport(input.accessCode)),
     quizSession: publicProcedure.input(z.object({ accessCode: passportCode, activitySlug })).query(({ input }) => startQuizSession(input)),

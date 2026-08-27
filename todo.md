@@ -210,3 +210,6 @@
 - [x] Strengthen question-bank tests to enforce a substantially larger pool and many distinct valid routes per ICT activity and grade band.
 - [x] Verify visible resource coverage and randomized route behavior, then document and checkpoint the expanded ICT question bank.
 - [x] Add the supplied ICT Welcome Back poster as a managed visual in the student resource library, then verify its responsive presentation.
+- [x] Make the Section and class field optional and flexible, accepting a simple class number/letter such as 7F as well as an optional Girl/Boy label.
+- [x] Redesign the student home page into a shorter purpose-first Welcome Day journey that presents what this is, how to begin, and the ICT choices without long scrolling.
+- [x] Verify the simplified entry and compact student journey at phone, tablet, and desktop sizes, then checkpoint the update.
