@@ -231,3 +231,6 @@
 - [x] Replace the current typography treatment with a warmer, clearer school-event type system across the student, record, live-board, and staff pages.
 - [x] Rewrite high-visibility student and staff copy with simpler, more natural phrases and stronger action labels.
 - [x] Verify the new visual language at phone, tablet, and desktop sizes, then checkpoint the update.
+- [x] Add a subtle school-themed soft-color background pattern across the active student, record, live-board, and staff views.
+- [x] Refine hover, focus, and button press motion so the playful interaction language matches the warmer event typography.
+- [x] Validate the background and interaction refresh at phone, tablet, and desktop sizes, then checkpoint the update.
