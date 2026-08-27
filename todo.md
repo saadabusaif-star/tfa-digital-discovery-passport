@@ -188,3 +188,7 @@
 - [x] Redesign the student grade-group control and entry-form spacing so its menu cannot cover the Start ICT route action.
 - [x] Improve Section and class guidance and touch-target spacing in the direct Boy 7F entry form.
 - [x] Verify the refined entry form at desktop and 390×844 phone sizes before saving a checkpoint.
+
+- [x] Audit activity, resource, and live-board display dimensions across phone, tablet, laptop, and wide desktop breakpoints.
+- [x] Refine responsive widths, heights, grids, typography, and image treatment so every display fits without clipping, excessive empty space, or crowded controls.
+- [x] Verify the refined student page and live-board display at phone, tablet, laptop, and wide-desktop viewport sizes before saving a checkpoint.

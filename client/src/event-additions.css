@@ -47,3 +47,40 @@
 .photo-corner { display:grid; grid-template-columns:minmax(0,.95fr) minmax(280px,.85fr); gap:32px; align-items:center; margin-top:22px; padding:clamp(24px,4vw,46px); overflow:hidden; border:1px solid #cdd9f8; border-radius:20px; background:linear-gradient(135deg,#eef3ff,#fdfdff 54%,#edfdf8); scroll-margin-top:18px; }.photo-corner__signs { display:flex; flex-wrap:wrap; gap:7px; margin-top:19px; }.photo-corner__backdrop { position:relative; display:grid; min-height:320px; place-items:center; align-content:center; overflow:hidden; padding:28px; border:7px solid #fff; border-radius:18px; background:radial-gradient(circle at 50% 17%,rgba(198,255,79,.95) 0 7%,transparent 7.5%),radial-gradient(circle at 25% 74%,rgba(46,194,166,.92) 0 13%,transparent 13.5%),linear-gradient(142deg,#573fd1,#194a8f 50%,#0b3158); color:#fff; text-align:center; box-shadow:0 16px 34px rgba(39,69,144,.21); }.photo-corner__backdrop::before,.photo-corner__backdrop::after { position:absolute; border:1px solid rgba(255,255,255,.32); border-radius:50%; content:""; }.photo-corner__backdrop::before { top:-82px; right:-67px; width:210px; height:210px; }.photo-corner__backdrop::after { bottom:-95px; left:-75px; width:200px; height:200px; }.photo-corner__backdrop>* { position:relative; z-index:1; }.photo-corner__backdrop>span,.photo-corner__backdrop small { color:#c6ff4f; font:9px "DM Mono",monospace; letter-spacing:.09em; }.photo-corner__backdrop h3 { margin:16px 0 7px; color:#fff; font:700 clamp(34px,4vw,51px)/.9 "Space Grotesk",sans-serif; letter-spacing:-.07em; }.photo-corner__backdrop p { margin:0; color:#f9fdff; font:700 17px/1.2 "Space Grotesk",sans-serif; }.photo-corner__backdrop strong { margin:22px 0 12px; padding:10px 14px; border-radius:9px; background:#c6ff4f; color:#173551; font:700 15px/1.15 "Space Grotesk",sans-serif; }
 @media (max-width:960px) { .activity-shortcuts,.tech-wheel,.human-ai,.photo-corner { grid-template-columns:1fr; }.activity-shortcuts__list { justify-content:flex-start; }.tech-wheel__game { grid-template-columns:minmax(220px,.65fr) minmax(160px,.55fr); }.tech-wheel__pointer { left:calc(25% - 17px); }.human-ai__feedback { grid-column:auto; }.future-2040__layout { grid-template-columns:1fr; }.career-card { max-width:430px; } }
 @media (max-width:640px) { .activity-shortcuts { gap:15px; padding:20px 17px; }.activity-shortcuts__list { display:grid; grid-template-columns:1fr 1fr; }.activity-shortcuts__list button { min-height:45px; justify-content:flex-start; padding:8px; font-size:10px; }.activity-shortcuts__list button svg { margin-left:auto; }.tech-wheel,.human-ai,.future-2040,.photo-corner { margin-top:18px; padding:23px 17px; border-radius:16px; }.tech-wheel__game { grid-template-columns:1fr; }.tech-wheel__disc { width:min(100%,280px); }.tech-wheel__pointer { top:-12px; left:calc(50% - 17px); transform:rotate(180deg); }.tech-wheel__legend { grid-template-columns:1fr 1fr; }.tech-wheel__legend button { font-size:9px; }.tech-wheel__result { grid-template-columns:auto 1fr; }.tech-wheel__result button { grid-column:1/-1; justify-self:start; }.human-ai__choices { gap:8px; }.human-ai__card { min-height:195px; padding:8px; }.human-ai__visual { height:90px; }.human-ai__card strong { font-size:14px; }.human-ai__card small { font-size:10px; }.future-2040__choices { display:grid; grid-template-columns:1fr 1fr; }.future-2040__choices button { justify-content:flex-start; }.photo-corner__backdrop { min-height:285px; }.photo-corner__backdrop strong { max-width:100%; font-size:13px; }.photo-corner__backdrop h3 { font-size:39px; } }
+
+/* Tablet landscape: preserve compact two-column ICT cards rather than one very tall vertical feed. */
+@media (min-width:720px) and (max-width:960px) {
+  .subject-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+  .lab-card { grid-template-columns:minmax(104px,.58fr) minmax(0,1.08fr); column-gap:12px; min-height:315px; padding:14px; }
+  .lab-card__art { min-height:158px; }
+  .lab-card h3 { font-size:clamp(21px,2.6vw,27px); }
+  .lab-card__action { gap:8px; margin-top:13px; padding:10px; }
+  .lab-card__action>button { min-height:32px; padding-inline:9px; font-size:11px; }
+  .tech-wheel { grid-template-columns:minmax(0,.78fr) minmax(0,1fr); gap:25px; padding:30px; }
+  .tech-wheel__game { grid-template-columns:minmax(190px,.85fr) minmax(130px,.55fr); gap:14px; }
+  .tech-wheel__disc { width:min(100%,270px); }
+  .tech-wheel__pointer { top:calc(50% - 150px); }
+  .human-ai { grid-template-columns:.62fr 1.38fr; gap:18px; }
+  .future-2040__layout { grid-template-columns:minmax(0,1fr) minmax(225px,.55fr); gap:22px; }
+  .photo-corner { grid-template-columns:minmax(0,1fr) minmax(245px,.8fr); gap:22px; }
+  .photo-corner__backdrop { min-height:285px; }
+  .ict-resource-library__grid { grid-template-columns:repeat(4,minmax(0,1fr)); }
+}
+
+/* Small phones: prevent controls and resource cards from feeling compressed. */
+@media (max-width:389px) {
+  .activity-shortcuts__list { grid-template-columns:1fr; }
+  .future-2040__choices { grid-template-columns:1fr; }
+  .tech-wheel__legend { grid-template-columns:1fr; }
+  .display-challenge__posters { flex-wrap:wrap; }
+  .ict-resource-library__grid { grid-template-columns:1fr; }
+  .ict-resource-library__grid img { height:150px; }
+}
+
+/* Wide screens get breathing room without allowing any activity to stretch indefinitely. */
+@media (min-width:1280px) {
+  .display-challenge,.technology-challenge,.ict-resource-library,.activity-shortcuts,.tech-wheel,.human-ai,.future-2040,.photo-corner { max-width:1180px; margin-right:auto; margin-left:auto; }
+  .subject-grid { max-width:1180px; margin-right:auto; margin-left:auto; }
+  .lab-card { min-height:350px; }
+  .tech-wheel__disc { width:min(100%,325px); }
+}
