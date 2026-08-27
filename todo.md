@@ -192,3 +192,7 @@
 - [x] Audit activity, resource, and live-board display dimensions across phone, tablet, laptop, and wide desktop breakpoints.
 - [x] Refine responsive widths, heights, grids, typography, and image treatment so every display fits without clipping, excessive empty space, or crowded controls.
 - [x] Verify the refined student page and live-board display at phone, tablet, laptop, and wide-desktop viewport sizes before saving a checkpoint.
+
+- [x] Reduce unnecessary heading, choice-area, and card whitespace in the Class of 2040 activity section.
+- [x] Tighten the Spin the Tech Wheel section’s title, explanation, wheel, legend, and reward-panel spacing without reducing touch usability.
+- [x] Verify the compacted Class of 2040 and Tech Wheel sections on desktop and phone before saving a checkpoint.
