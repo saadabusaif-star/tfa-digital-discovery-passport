@@ -101,3 +101,19 @@
   .record-main,.live-main { padding-block:19px 30px; }.record-summary>div { min-height:86px; padding:13px; }.record-summary__identity p { font-size:18px; }.record-summary__metric strong { font-size:29px; }.record-results,.live-leaderboard,.live-feed { padding:14px; }.record-empty { min-height:205px; }
   .live-intro { padding:16px; }.live-metrics article { padding:12px; }.live-metrics strong { font-size:27px; }.leader-card { min-height:88px; padding:9px; }.live-feed__list article { padding:9px; }
 }
+
+/* Modern easy-access student command bar and in-page guidance. */
+.school-nav-wrap { position:relative; z-index:20; }
+.school-nav { min-height:64px; }
+.school-nav__commands { align-items:center; }
+.school-nav__link,.school-nav__guide summary { display:flex; min-height:38px; align-items:center; gap:7px; padding:8px 11px; border-radius:8px; color:#46647e; font-size:12px; font-weight:800; text-decoration:none; }
+.school-nav__link:hover,.school-nav__guide summary:hover { background:#eaf2ff; color:var(--blue); }
+.school-nav__guide { position:relative; }
+.school-nav__guide summary { list-style:none; border:1px solid #c9ddf0; background:#fff; color:#194c70; cursor:pointer; }
+.school-nav__guide summary::-webkit-details-marker { display:none; }
+.school-nav__guide[open] summary { border-color:#31a590; background:#e9faf5; color:#116b5c; }
+.student-guide { position:absolute; top:calc(100% + 9px); right:0; width:min(430px,calc(100vw - 34px)); padding:15px; border:1px solid #cbdcea; border-radius:14px; background:#fff; box-shadow:0 18px 46px rgba(19,54,89,.22); color:var(--ink); }
+.student-guide__title { display:flex; align-items:center; gap:9px; padding-bottom:12px; border-bottom:1px solid #e5edf5; }.student-guide__title svg { color:#138c79; }.student-guide__title strong,.student-guide__title span { display:block; }.student-guide__title strong { font:700 16px/1 "Space Grotesk",sans-serif; }.student-guide__title span { margin-top:3px; color:#698199; font-size:11px; }
+.student-guide__grid { display:grid; gap:8px; margin-top:12px; }.student-guide__grid article { display:grid; grid-template-columns:25px 1fr; gap:8px; align-items:start; padding:8px; border-radius:8px; background:#f5f9fe; }.student-guide__grid b { display:grid; width:25px; height:25px; place-items:center; border-radius:7px; background:#143c63; color:var(--lime); font:10px "DM Mono",monospace; }.student-guide__grid strong,.student-guide__grid span { display:block; }.student-guide__grid strong { font-size:12px; }.student-guide__grid span { margin-top:2px; color:#688099; font-size:10px; line-height:1.4; }.student-guide em { color:#187e6d; font-style:normal; font-weight:800; }
+.student-guide__purpose { display:flex; align-items:flex-start; gap:5px; margin:11px 0; color:#3c627f; font-size:10px; line-height:1.45; }.student-guide__purpose svg { flex:none; color:#e1aa36; }.student-guide>a { display:flex; min-height:35px; align-items:center; justify-content:center; gap:6px; border-radius:7px; background:var(--lime); color:#163837; font-size:11px; font-weight:800; text-decoration:none; }
+@media(max-width:640px) { .school-nav { min-height:58px; gap:8px; }.school-nav__brand b { font-size:15px; }.school-nav__commands { gap:2px!important; }.school-nav__link,.school-nav__guide summary { min-height:36px; padding:7px; font-size:0; }.school-nav__link svg,.school-nav__guide summary svg { width:17px; height:17px; }.student-guide { position:fixed; top:82px; right:12px; left:12px; width:auto; max-height:calc(100svh - 96px); overflow-y:auto; } }

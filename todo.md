@@ -200,3 +200,7 @@
 - [x] Define compact viewport-fit dimensions for opened activities so their interactive controls and results stay within a typical laptop or tablet screen.
 - [x] Apply the compact sizing system across the student home, attraction blocks, studio cards, personal record, and live board without reducing essential touch targets.
 - [x] Verify Class of 2040, Tech Wheel, Human-or-AI, studio dialogs, record, and live board at phone, tablet, laptop, and wide-desktop sizes before saving a checkpoint.
+
+- [x] Expand the student navigation into a clear modern command bar with direct activity, record, and live-board access.
+- [x] Add a student-facing Click to learn more guide that explains the purpose of ICT Welcome Day, how to join, what to do, and how points are earned.
+- [x] Verify navigation and guide interaction at phone, tablet, laptop, and wide-desktop sizes before saving a checkpoint.

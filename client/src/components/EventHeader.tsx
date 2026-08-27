@@ -1,4 +1,4 @@
-import { BookOpenCheck, Radio, Trophy } from "lucide-react";
+import { BookOpenCheck, CircleHelp, Compass, Radio, Star, Trophy } from "lucide-react";
 import { STUDENT_NAVIGATION } from "@/lib/studentExperience";
 
 const logoUrl = "/manus-storage/tfa-school-logo_006d90e3.png";
@@ -30,6 +30,6 @@ export function EventHeader({ compact = false }: { compact?: boolean }) {
         </a>
       </div>
     </div>
-    {!compact && <div className="school-nav-wrap"><div className="container school-nav"><a href="/#welcome" className="school-nav__brand"><span>ICT WELCOME DAY</span><b>Discovery Lab</b></a><nav aria-label="Student navigation">{STUDENT_NAVIGATION.map(item => { const Icon = navigationIcons[item.icon]; return <a key={item.label} href={item.href} className="school-nav__link"><Icon size={16} /><span>{item.label}</span></a>; })}</nav></div></div>}
+    {!compact && <div className="school-nav-wrap"><div className="container school-nav"><a href="/#welcome" className="school-nav__brand"><span>ICT WELCOME DAY</span><b>Discovery Lab</b></a><nav aria-label="Student navigation" className="school-nav__commands">{STUDENT_NAVIGATION.map(item => { const Icon = navigationIcons[item.icon]; return <a key={item.label} href={item.href} className="school-nav__link"><Icon size={16} /><span>{item.label}</span></a>; })}<details className="school-nav__guide"><summary><CircleHelp size={16} /><span>How it works</span></summary><div className="student-guide"><div className="student-guide__title"><Compass size={18} /><div><strong>Your ICT Welcome Day</strong><span>Explore, try, and celebrate digital skills.</span></div></div><div className="student-guide__grid"><article><b>1</b><div><strong>Start your record</strong><span>Enter your name, grade group, and class, for example <em>Boy 7F</em>.</span></div></article><article><b>2</b><div><strong>Choose any activity</strong><span>Try career cards, the Tech Wheel, visual challenges, or an ICT studio.</span></div></article><article><b>3</b><div><strong>Earn points</strong><span>Each three-question ICT studio gives up to <em>30 points</em>. Bonus activities add more.</span></div></article></div><p className="student-guide__purpose"><Star size={15} /> <strong>Purpose:</strong> discover ICT skills, build confidence, and begin the school year as a future innovator.</p><a href="/#future-2040">Start exploring <Trophy size={15} /></a></div></details></nav></div></div>}
   </header>;
 }
