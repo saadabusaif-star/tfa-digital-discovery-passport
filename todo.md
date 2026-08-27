@@ -213,3 +213,5 @@
 - [x] Make the Section and class field optional and flexible, accepting a simple class number/letter such as 7F as well as an optional Girl/Boy label.
 - [x] Redesign the student home page into a shorter purpose-first Welcome Day journey that presents what this is, how to begin, and the ICT choices without long scrolling.
 - [x] Verify the simplified entry and compact student journey at phone, tablet, and desktop sizes, then checkpoint the update.
+- [x] Add clear hover, keyboard-focus, and touch-press feedback to the compact ICT studio choices, primary actions, and expandable Welcome Day panels.
+- [x] Verify the interaction polish at desktop and phone sizes, then checkpoint the update.
