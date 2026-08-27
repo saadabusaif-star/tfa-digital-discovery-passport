@@ -39,18 +39,30 @@ describe("grade-aware randomized quiz question bank", () => {
         expect(fallback.every(question => issued.includes(question.id))).toBe(true);
       }
       for (const slug of activeIctStudios) {
-        expect(getQuestionPoolSize(slug, gradeBand)).toBeGreaterThanOrEqual(12);
+        expect(getQuestionPoolSize(slug, gradeBand)).toBeGreaterThanOrEqual(30);
         const issued: string[] = [];
-        for (let routeNumber = 0; routeNumber < 4; routeNumber += 1) {
+        const promptsByLevel = new Map<string, string[]>();
+        for (let routeNumber = 0; routeNumber < 10; routeNumber += 1) {
           const route = getQuestionRoute(slug, gradeBand, () => 0, issued);
           expect(route).toHaveLength(3);
           expect(route.every(question => !issued.includes(question.id))).toBe(true);
+          for (const question of route) {
+            const prompts = promptsByLevel.get(question.level) ?? [];
+            prompts.push(question.prompt);
+            promptsByLevel.set(question.level, prompts);
+          }
           issued.push(...route.map(question => question.id));
         }
-        expect(new Set(issued).size).toBe(12);
+        expect(new Set(issued).size).toBe(30);
+        for (const level of ["Easy", "Medium", "Hard"]) {
+          const prompts = promptsByLevel.get(level) ?? [];
+          expect(prompts).toHaveLength(10);
+          expect(new Set(prompts).size).toBe(10);
+        }
+        const fallback = getQuestionRoute(slug, gradeBand, () => 0, issued);
+        expect(fallback).toHaveLength(3);
+        expect(fallback.every(question => issued.includes(question.id))).toBe(true);
       }
-      expect(getQuestionPoolSize("ict-display-challenge", gradeBand)).toBeGreaterThanOrEqual(15);
-      expect(getQuestionPoolSize("digital-technology-or-not", gradeBand)).toBeGreaterThanOrEqual(18);
     }
   });
 });

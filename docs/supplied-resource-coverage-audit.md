@@ -16,4 +16,6 @@ The following inventory records the concepts extracted from the nine supplied IC
 
 ## Question-bank expansion
 
-The active student catalogue uses five ICT-only studios: **ICT Display Quest**, **ICT Foundations**, **Keyboard Shortcut Sprint**, **Excel Skills Lab**, and **Digital Technology or Not?**. The extension added one new, deliberately different resource-grounded alternative for every grade-band and difficulty combination in each studio, increasing all active pools before the safe fallback behavior can apply. The concepts cover device roles, safe digital conduct, shortcuts, spreadsheet structure and analysis, digital information flow, and classification rather than merely paraphrasing existing prompts.
+The active student catalogue uses five ICT-only studios: **ICT Display Quest**, **ICT Foundations**, **Keyboard Shortcut Sprint**, **Excel Skills Lab**, and **Digital Technology or Not?**. Every activity now has **ten deliberately different alternatives at each Easy, Medium, and Hard level for every grade band**, producing ten fresh three-question routes for each activity/grade-band pairing before safe fallback behavior applies. The active bank therefore contains 450 questions: 90 per studio across Grades 6–7, 8–9, and 10–12.
+
+The concepts cover device roles, safe digital conduct, keyboard commands, spreadsheet structure and analysis, digital information flow, classification, communication, collaboration, and immersive-learning safety. Existing questions were only appended to—never reordered—so previously stored session-question IDs remain valid.

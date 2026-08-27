@@ -124,7 +124,7 @@
 - [x] Use every supplied resource visibly or conceptually in the student-facing Welcome Day experience without adding local document assets to the web project.
 - [x] Test question-route uniqueness, grade coverage, resource linkage, persistence, and desktop plus 390×844 mobile presentation before checkpointing.
 
-- [ ] Expand every activity and grade pool to school-scale capacity so many students receive fresh routes before any question fallback is needed.
+- [x] Expand every activity and grade pool to school-scale capacity so many students receive fresh routes before any question fallback is needed.
 - [x] Add many-successive-route uniqueness tests for every activity and grade band, including explicit exhaustion behavior.
 
 - [x] Complete an explicit 390×844 mobile randomized Digital Technology quiz through success, record, live-board publication, and targeted QA cleanup.

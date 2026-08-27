@@ -1,43 +1,57 @@
-# Supplied ICT Resource Coverage Notes
+# ICT Welcome Day Resource and Question-Bank Notes
 
-## Concept inventory
+## Nine-resource coverage map
 
-| Supplied resource | Distinct learning concepts captured for question routes |
+All nine supplied resources contribute to the ICT-only Welcome Day experience. The materials are represented through named activities, the supplied-resource library and display language, or question concepts. The Welcome Back poster supplies the visual Welcome Day identity and future-innovator/photo-corner language; it is not treated as an academic worksheet.
+
+| Supplied resource | Learning concepts used | Platform integration |
+|---|---|---|
+| **ICT Welcome Back Poster A3** | Welcome-back identity, future innovators, ICT discovery | Welcome Day identity and photo-corner/career-card language |
+| **ICT display poster** | Communication, connections, information sharing, teamwork | ICT Display Quest display concepts and routes |
+| **Computing display banner** | Creative computing, digital exploration, immersive/VR learning | ICT Display Quest visual and VR routes |
+| **Keyboard Shortcuts display posters** | New, open, save, print, copy, paste, cut, undo, redo, select all, text styling, find, zoom, browser navigation | Keyboard Shortcut Sprint and ICT Display Quest routes |
+| **ICT I Can display posters** | Login, program choice, pointer control, typing, touch input, reflection, logoff/shutdown | ICT Foundations and Digital Technology routes |
+| **Computing Area Rules posters** | Turn-taking, device care, approved websites, privacy, posture, food/drink safety, respectful shared-device use, reporting concerns | ICT Foundations, ICT Display Quest, and Digital Technology routes |
+| **Excel Skills Booklet** | Cells, rows, columns, formulae, functions, data formats, sorting, filtering, charts and chart editing | Excel Skills Lab resources and routes |
+| **Excel Pages pack** | Active cell, formula bar, worksheets, ranges, organised data and formulas | Excel Skills Lab routes |
+| **Digital Technology or Not? presentation** | Digital technology gets, sends and saves information; classification; input, processing, output; data storage | Digital Technology or Not activity and routes |
+
+## Active ICT-only capacity
+
+The five current student studios use three grade bands: **Grades 6–7**, **Grades 8–9**, and **Grades 10–12**. Every activity/grade-band combination now has **ten unique alternatives at each difficulty level**, giving **ten fully fresh Easy–Medium–Hard routes** before any question must be reused for that activity.
+
+| Active studio | Easy alternatives per grade band | Medium alternatives per grade band | Hard alternatives per grade band | Fresh complete routes per grade band | Total questions across three grade bands |
+|---|---:|---:|---:|---:|---:|
+| ICT Display Quest | 10 | 10 | 10 | 10 | 90 |
+| ICT Foundations | 10 | 10 | 10 | 10 | 90 |
+| Keyboard Shortcut Sprint | 10 | 10 | 10 | 10 | 90 |
+| Excel Skills Lab | 10 | 10 | 10 | 10 | 90 |
+| Digital Technology or Not? | 10 | 10 | 10 | 10 | 90 |
+| **Active ICT question-bank total** | — | — | — | — | **450** |
+
+## Dynamic selection and secure scoring
+
+Every session receives exactly one **Easy**, one **Medium**, and one **Hard** question. The route generator selects from the appropriate activity and grade band with a random choice function. Before choosing a question, it removes question IDs that were issued in earlier sessions for the same activity, so a fresh question is selected whenever one is available. The current session’s exact route is then saved before submission; scoring resolves that stored route rather than selecting questions again.
+
+> **Safe exhaustion rule:** after the ten fresh alternatives in one difficulty level have been used, the generator intentionally falls back to a valid previously issued alternative instead of failing, shortening the route, or changing the saved answer key.
+
+Question IDs are index-based. The expansion is therefore strictly **append-only**: existing questions were never reordered, preserving all saved historical-session routes.
+
+## Automated verification
+
+The Vitest question-bank suite now checks every active ICT studio in each grade band for the following requirements:
+
+| Safeguard | Verified requirement |
 |---|---|
-| **Keyboard-shortcut display posters** | Open, close, new document, save, print, copy, paste, cut, undo, redo, select all, zoom in/out, new tab, screenshot, caps lock, bold, italics, and underline. |
-| **Microsoft Excel Skills Booklet** (`Pages.pdf` and `Booklet.pdf`) | Cells, rows, columns, ranges, worksheets, formula bar, active cell, moving and editing data, data types, resizing, text wrapping, number formats, sorting, filtering, SUM, AVERAGE, charts, chart labels, and chart editing. |
-| **ICT I Can display posters** | Logging on and off, correct shutdown, mouse, trackpad, touchscreen input, choosing programs, digital painting, keyboard typing, and explaining computer work. |
-| **Computing Area Rules posters** | Taking turns, collaboration, personal-information safety, teacher-approved websites, safe posture, respecting another learner’s device, careful use, no food or drink, and reporting upsetting content. |
-| **Computing display banner** | Computing as a creative, collaborative subject; digital exploration; and immersive technology such as virtual reality. |
-| **ICT display poster** | Digital communication, connected learning, information sharing, and using devices collaboratively around a shared network. |
-| **Digital Technology or Not? presentation** | Digital tools that get, send, and save information; object classification; input, processing, output; digital storage; and safe, purposeful device use. |
+| Route structure | Exactly three questions in Easy → Medium → Hard order |
+| Public payload safety | Correct answer keys are removed before questions are sent to students |
+| Capacity | At least 30 questions per active activity and grade band |
+| No-repeat window | Ten successive routes contain 30 distinct question IDs before fallback |
+| Prompt variety | Each difficulty contributes ten distinct prompts across those ten fresh routes |
+| Fallback | A valid three-question route is still supplied only after fresh alternatives are exhausted |
 
-## Non-repetition standard
+`pnpm check` and `pnpm test` both passed after the school-scale expansion. The suite reports **7 test files and 24 passing tests**; the route-capacity assertions run across all five active studios and all three grade bands.
 
-The question-bank design will use **distinct concept families**, rather than paraphrasing the same fact. A student receives one route spanning varied concepts and does not receive a previously served question ID again for that activity. The existing session table will preserve the exact issued route for secure scoring, while the expanded bank will provide multiple fresh alternatives for every grade band.
+## Official-logo note
 
-## Student-facing use
-
-The Welcome Day page will keep the existing ICT Display Quest and Digital Technology activity, and add a compact **ICT Resource Library** that shows the newly supplied Excel, safe-computing, and ICT-skills materials as question sources. The original documents remain outside the web project; only managed preview images and the extracted learning concepts are used in the student interface.
-
-## Expanded delivery and verification
-
-The shared question bank now gives every activity and grade band **at least three distinct alternatives for each Easy, Medium, and Hard level**. The two supplied-resource bonus activities are broader: each grade band has **at least four alternatives per level** for the ICT Display Quest and **at least five alternatives per level** for Digital Technology or Not?. New sessions exclude question IDs already issued for the same activity whenever a fresh alternative remains. Each individual route is persisted before answers are submitted, so its grading remains stable and cannot be changed by later random selection.
-
-The expanded bank covers the five core subject studios as well as the ICT Display Quest and Digital Technology activity. Automated TypeScript validation and **22 Vitest tests** passed after the expansion, including checks for route breadth, grade-band coverage, answer-key removal from public question payloads, and issued-question exclusion. Desktop and **390 × 844** mobile visual reviews confirmed the full ICT Resource Library, separate bonus activities, compact bilingual header, subject studios, clear live-board wording, and ICT Department footer badge remain readable.
-
-## Official white-logo note
-
-The requested `https://www.firstacademy.org/images/logo-white.png` source is protected by an automated security check when accessed from this environment. The header currently retains the project-managed TFA logo inside a dark official-logo frame and links correctly to `https://www.firstacademy.org/`. The full supplied Arabic authority line has been added. Replacing the logo with the requested white asset remains pending either a user-provided logo file or successful verification through the school website’s access check.
-
-## Explicit phone-route verification
-
-At an explicitly set **390 × 844** phone viewport, a temporary Grade 6–7 participant named **Mobile Random QA** received and completed a fresh Digital Technology or Not? route. The issued questions were: selecting a **mouse** as a program-selection tool, identifying a **toy doll** as non-digital technology, and identifying **printer and smartphone** as an all-digital pair. The student received **3/3** and **30 points** in the mobile success panel; the personal record showed the separate Welcome Day bonus; and the public live board showed **Mobile Random QA — Digital Technology or Not? — 3/3 — 30 pts**.
-
-The temporary participant, completion, quiz session, submissions, votes, and local browser record were then removed. A refreshed mobile live board no longer contained the QA result and returned from five participants / 135 points to four participants / 105 points, preserving genuine event records.
-
-## Cross-activity uniqueness coverage
-
-The automated bank tests now issue three successive routes for **every activity and grade band**, carrying the previously issued question IDs into each following selection. The test verifies that all nine question IDs across those three Easy–Medium–Hard routes are unique. This confirms fresh questions are selected across the five subject studios, ICT Display Quest, and Digital Technology or Not? for the first three same-grade participants before any pool fallback. The separate school-scale capacity item remains tracked for expanding that guaranteed fresh-route window further.
-
-The same test now continues issuing routes through every available alternative in each activity/grade pool, then explicitly checks exhaustion behavior. Once no fresh alternative remains, the generator still returns a valid three-question route using only already-issued IDs. This means session creation remains safe and deterministic rather than failing during a busy event, while the planned capacity expansion can extend the fresh-question window further.
+The requested `https://www.firstacademy.org/images/logo-white.png` source is protected by an automated security check in this environment. The header retains the managed TFA logo inside the official logo frame and links to `https://www.firstacademy.org/`. Replacing it with the requested white asset still requires a user-provided source file or successful access through the school website.
