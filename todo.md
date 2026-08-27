@@ -204,3 +204,8 @@
 - [x] Expand the student navigation into a clear modern command bar with direct activity, record, and live-board access.
 - [x] Add a student-facing Click to learn more guide that explains the purpose of ICT Welcome Day, how to join, what to do, and how points are earned.
 - [x] Verify navigation and guide interaction at phone, tablet, laptop, and wide-desktop sizes before saving a checkpoint.
+
+- [x] Audit all nine supplied ICT resources and map every poster, booklet, pages pack, rules set, and presentation to visible website use and question concepts.
+- [x] Expand every ICT activity and grade-band pool with diverse resource-grounded questions so many complete three-question routes remain fresh before any safe fallback.
+- [x] Strengthen question-bank tests to enforce a substantially larger pool and many distinct valid routes per ICT activity and grade band.
+- [x] Verify visible resource coverage and randomized route behavior, then document and checkpoint the expanded ICT question bank.

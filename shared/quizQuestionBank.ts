@@ -295,6 +295,57 @@ addResourceQuestions("ict-display-challenge", "10-12", "Hard",
   seed("Which principle supports responsible immersive-technology use?", ["A) Consider physical safety and accessibility", "B) Ignore discomfort", "C) Share private accounts", "D) Avoid teacher guidance"], "A) Consider physical safety and accessibility"),
 );
 
+// Additional resource-led alternatives: distinct concepts extend every active ICT route before fallback is ever needed.
+addResourceQuestions("ict-foundations", "6-7", "Easy", seed("Which device lets you hear sound from a computer?", ["A) Headphones", "B) Keyboard", "C) Monitor", "D) Mouse"], "A) Headphones"));
+addResourceQuestions("ict-foundations", "6-7", "Medium", seed("Which information should you keep private online?", ["A) Your password", "B) A class topic", "C) A book title", "D) A weather report"], "A) Your password"));
+addResourceQuestions("ict-foundations", "6-7", "Hard", seed("Why should you take turns on a shared device?", ["A) So everyone can work fairly", "B) To make the device slower", "C) To stop collaboration", "D) To hide the keyboard"], "A) So everyone can work fairly"));
+addResourceQuestions("ict-foundations", "8-9", "Easy", seed("Which component shows the visual output from a computer?", ["A) Monitor", "B) Keyboard", "C) Microphone", "D) Scanner"], "A) Monitor"));
+addResourceQuestions("ict-foundations", "8-9", "Medium", seed("What does it mean to log off a shared device?", ["A) End your account session safely", "B) Delete the computer", "C) Turn off the internet", "D) Share your password"], "A) End your account session safely"));
+addResourceQuestions("ict-foundations", "8-9", "Hard", seed("Why is it important not to touch another student’s device while they work?", ["A) It respects their work and privacy", "B) It improves Wi-Fi", "C) It changes the keyboard language", "D) It makes screens brighter"], "A) It respects their work and privacy"));
+addResourceQuestions("ict-foundations", "10-12", "Easy", seed("Which device is designed to capture spoken sound as input?", ["A) Microphone", "B) Speaker", "C) Projector", "D) Monitor"], "A) Microphone"));
+addResourceQuestions("ict-foundations", "10-12", "Medium", seed("What is a reasonable purpose of an acceptable-use rule in an ICT room?", ["A) Set safe and respectful expectations", "B) Prevent all learning", "C) Replace teacher support", "D) Make passwords public"], "A) Set safe and respectful expectations"));
+addResourceQuestions("ict-foundations", "10-12", "Hard", seed("Which action best protects a shared account from unauthorised use?", ["A) Sign out when finished", "B) Leave it open", "C) Post the password", "D) Let anyone use it"], "A) Sign out when finished"));
+
+addResourceQuestions("keyboard-shortcuts", "6-7", "Easy", seed("Which shortcut prints your work?", ["A) Ctrl + P", "B) Ctrl + N", "C) Ctrl + O", "D) Ctrl + W"], "A) Ctrl + P"));
+addResourceQuestions("keyboard-shortcuts", "6-7", "Medium", seed("Which shortcut puts copied words into a new place?", ["A) Ctrl + V", "B) Ctrl + C", "C) Ctrl + X", "D) Ctrl + W"], "A) Ctrl + V"));
+addResourceQuestions("keyboard-shortcuts", "6-7", "Hard", seed("Which shortcut brings back an action after Undo?", ["A) Ctrl + Y", "B) Ctrl + Z", "C) Ctrl + S", "D) Ctrl + P"], "A) Ctrl + Y"));
+addResourceQuestions("keyboard-shortcuts", "8-9", "Easy", seed("Which shortcut opens a file you already saved?", ["A) Ctrl + O", "B) Ctrl + N", "C) Ctrl + W", "D) Ctrl + A"], "A) Ctrl + O"));
+addResourceQuestions("keyboard-shortcuts", "8-9", "Medium", seed("Which shortcut makes selected text italic in many programs?", ["A) Ctrl + I", "B) Ctrl + B", "C) Ctrl + U", "D) Ctrl + P"], "A) Ctrl + I"));
+addResourceQuestions("keyboard-shortcuts", "8-9", "Hard", seed("Which shortcut can select every item in a document?", ["A) Ctrl + A", "B) Ctrl + C", "C) Ctrl + P", "D) Ctrl + Z"], "A) Ctrl + A"));
+addResourceQuestions("keyboard-shortcuts", "10-12", "Easy", seed("Which shortcut zooms out in many applications?", ["A) Ctrl + -", "B) Ctrl + +", "C) Ctrl + P", "D) Ctrl + N"], "A) Ctrl + -"));
+addResourceQuestions("keyboard-shortcuts", "10-12", "Medium", seed("Which shortcut commonly focuses the browser address bar?", ["A) Ctrl + L", "B) Ctrl + W", "C) Ctrl + P", "D) Ctrl + B"], "A) Ctrl + L"));
+addResourceQuestions("keyboard-shortcuts", "10-12", "Hard", seed("Which shortcut is normally used to close the current browser tab?", ["A) Ctrl + W", "B) Ctrl + T", "C) Ctrl + L", "D) Ctrl + A"], "A) Ctrl + W"));
+
+addResourceQuestions("excel-skills", "6-7", "Easy", seed("What is a spreadsheet used for?", ["A) Organising information", "B) Washing a screen", "C) Recording sound only", "D) Drawing with a mouse only"], "A) Organising information"));
+addResourceQuestions("excel-skills", "6-7", "Medium", seed("Which word describes boxes going up and down in a spreadsheet?", ["A) Columns", "B) Rows", "C) Charts", "D) Tabs"], "A) Columns"));
+addResourceQuestions("excel-skills", "6-7", "Hard", seed("What should you check before using a number in a chart?", ["A) That the data was entered correctly", "B) That the screen is blue", "C) That the keyboard is hidden", "D) That the file is closed"], "A) That the data was entered correctly"));
+addResourceQuestions("excel-skills", "8-9", "Easy", seed("What is a worksheet?", ["A) A named set of rows and columns", "B) A computer mouse", "C) A password", "D) A printer tray"], "A) A named set of rows and columns"));
+addResourceQuestions("excel-skills", "8-9", "Medium", seed("Which feature helps show only spreadsheet rows that match a rule?", ["A) Filter", "B) Print", "C) Zoom", "D) Paste"], "A) Filter"));
+addResourceQuestions("excel-skills", "8-9", "Hard", seed("What can chart handles be used for?", ["A) Resize a selected chart", "B) Create a password", "C) Delete all cells", "D) Open a browser"], "A) Resize a selected chart"));
+addResourceQuestions("excel-skills", "10-12", "Easy", seed("What does the cell reference B4 mean?", ["A) Column B and row 4", "B) Row B and column 4", "C) Book 4", "D) Formula B4"], "A) Column B and row 4"));
+addResourceQuestions("excel-skills", "10-12", "Medium", seed("What is the main benefit of using a spreadsheet function?", ["A) It simplifies a repeated calculation", "B) It hides every value", "C) It removes all rows", "D) It replaces labels"], "A) It simplifies a repeated calculation"));
+addResourceQuestions("excel-skills", "10-12", "Hard", seed("Why should a chart title and axes be labelled clearly?", ["A) So viewers can interpret the data", "B) So the chart cannot be resized", "C) So formulas stop working", "D) So no data is needed"], "A) So viewers can interpret the data"));
+
+addResourceQuestions("ict-display-challenge", "6-7", "Easy", seed("What can ICT help a class do with a shared project?", ["A) Work together and share ideas", "B) Hide all work", "C) Avoid learning", "D) Break equipment"], "A) Work together and share ideas"));
+addResourceQuestions("ict-display-challenge", "6-7", "Medium", seed("Which shortcut poster helps you save your work?", ["A) Ctrl + S", "B) Ctrl + W", "C) Ctrl + N", "D) Ctrl + X"], "A) Ctrl + S"));
+addResourceQuestions("ict-display-challenge", "6-7", "Hard", seed("What should you do if you see something online that worries you?", ["A) Tell a teacher", "B) Keep clicking", "C) Share it widely", "D) Ignore it forever"], "A) Tell a teacher"));
+addResourceQuestions("ict-display-challenge", "8-9", "Easy", seed("Which device is most useful for entering text into a document?", ["A) Keyboard", "B) Speaker", "C) Projector", "D) Monitor"], "A) Keyboard"));
+addResourceQuestions("ict-display-challenge", "8-9", "Medium", seed("What does Ctrl + S usually do?", ["A) Saves the current work", "B) Closes the file", "C) Opens a new file", "D) Prints a page"], "A) Saves the current work"));
+addResourceQuestions("ict-display-challenge", "8-9", "Hard", seed("Why is checking a digital source before sharing it responsible?", ["A) It helps avoid spreading incorrect information", "B) It makes the keyboard faster", "C) It removes the internet", "D) It creates a new password"], "A) It helps avoid spreading incorrect information"));
+addResourceQuestions("ict-display-challenge", "10-12", "Easy", seed("Which service supports storing and sharing class files online?", ["A) Cloud storage", "B) A paperclip", "C) A desk", "D) A projector screen"], "A) Cloud storage"));
+addResourceQuestions("ict-display-challenge", "10-12", "Medium", seed("What does Ctrl + F commonly help a user do?", ["A) Find text on a page", "B) Format every chart", "C) Close all windows", "D) Print a folder"], "A) Find text on a page"));
+addResourceQuestions("ict-display-challenge", "10-12", "Hard", seed("Which action is best before sharing collaborative work online?", ["A) Check permissions and remove private details", "B) Share passwords", "C) Upload every personal file", "D) Ignore the audience"], "A) Check permissions and remove private details"));
+
+addResourceQuestions("digital-technology-or-not", "6-7", "Easy", seed("Which tool can save a digital drawing?", ["A) Tablet", "B) Football", "C) Ruler", "D) Lunch box"], "A) Tablet"));
+addResourceQuestions("digital-technology-or-not", "6-7", "Medium", seed("Which object sends information into a computer?", ["A) Keyboard", "B) Poster", "C) Chair", "D) Book"], "A) Keyboard"));
+addResourceQuestions("digital-technology-or-not", "6-7", "Hard", seed("Which group contains only digital devices?", ["A) Laptop, printer, tablet", "B) Ball, ruler, book", "C) Chair, pencil, coat", "D) Apple, cup, bag"], "A) Laptop, printer, tablet"));
+addResourceQuestions("digital-technology-or-not", "8-9", "Easy", seed("Which device can take a photo and save it as information?", ["A) Smartphone", "B) Pencil", "C) Paper map", "D) Water bottle"], "A) Smartphone"));
+addResourceQuestions("digital-technology-or-not", "8-9", "Medium", seed("Which digital system part gives information to a user?", ["A) Output", "B) Input", "C) Storage only", "D) Paper"], "A) Output"));
+addResourceQuestions("digital-technology-or-not", "8-9", "Hard", seed("Why is a connected printer part of a digital system?", ["A) It receives processed data as output", "B) It is made from paper", "C) It has no role in information", "D) It cannot use a computer"], "A) It receives processed data as output"));
+addResourceQuestions("digital-technology-or-not", "10-12", "Easy", seed("Which technology can capture physical movement as digital data?", ["A) Motion sensor", "B) Wooden ruler", "C) Paper book", "D) Plastic cup"], "A) Motion sensor"));
+addResourceQuestions("digital-technology-or-not", "10-12", "Medium", seed("Which stage changes raw input into useful information?", ["A) Processing", "B) Decoration", "C) Storage shelf", "D) Printing paper"], "A) Processing"));
+addResourceQuestions("digital-technology-or-not", "10-12", "Hard", seed("Why is a digital technology classification based on function rather than appearance?", ["A) It depends on handling information", "B) Every device has the same colour", "C) Size proves capability", "D) Only screens are digital"], "A) It depends on handling information"));
+
 export const QUIZ_ACTIVITY_SLUGS = Object.keys(bank) as QuizActivitySlug[];
 
 export function getQuestionPoolSize(slug: QuizActivitySlug, gradeBand: GradeBand) {

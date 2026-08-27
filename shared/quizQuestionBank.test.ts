@@ -22,6 +22,7 @@ describe("grade-aware randomized quiz question bank", () => {
   });
 
   it("provides broad resource routes and actively avoids issued question IDs while fresh alternatives remain", () => {
+    const activeIctStudios = ["ict-display-challenge", "digital-technology-or-not", "ict-foundations", "keyboard-shortcuts", "excel-skills"] as const;
     for (const gradeBand of gradeBands) {
       for (const slug of QUIZ_ACTIVITY_SLUGS) {
         expect(getQuestionPoolSize(slug, gradeBand)).toBeGreaterThanOrEqual(9);
@@ -37,14 +38,19 @@ describe("grade-aware randomized quiz question bank", () => {
         expect(fallback).toHaveLength(3);
         expect(fallback.every(question => issued.includes(question.id))).toBe(true);
       }
-      expect(getQuestionPoolSize("ict-display-challenge", gradeBand)).toBeGreaterThanOrEqual(12);
-      expect(getQuestionPoolSize("digital-technology-or-not", gradeBand)).toBeGreaterThanOrEqual(15);
-      const first = getQuestionRoute("digital-technology-or-not", gradeBand, () => 0);
-      const fresh = getQuestionRoute("digital-technology-or-not", gradeBand, () => 0, first.map(question => question.id));
-      const third = getQuestionRoute("digital-technology-or-not", gradeBand, () => 0, [...first, ...fresh].map(question => question.id));
-      expect(fresh.map(question => question.id)).not.toEqual(first.map(question => question.id));
-      expect(third.map(question => question.id)).not.toEqual(first.map(question => question.id));
-      expect(third.map(question => question.id)).not.toEqual(fresh.map(question => question.id));
+      for (const slug of activeIctStudios) {
+        expect(getQuestionPoolSize(slug, gradeBand)).toBeGreaterThanOrEqual(12);
+        const issued: string[] = [];
+        for (let routeNumber = 0; routeNumber < 4; routeNumber += 1) {
+          const route = getQuestionRoute(slug, gradeBand, () => 0, issued);
+          expect(route).toHaveLength(3);
+          expect(route.every(question => !issued.includes(question.id))).toBe(true);
+          issued.push(...route.map(question => question.id));
+        }
+        expect(new Set(issued).size).toBe(12);
+      }
+      expect(getQuestionPoolSize("ict-display-challenge", gradeBand)).toBeGreaterThanOrEqual(15);
+      expect(getQuestionPoolSize("digital-technology-or-not", gradeBand)).toBeGreaterThanOrEqual(18);
     }
   });
 });
