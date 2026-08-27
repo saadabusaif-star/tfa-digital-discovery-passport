@@ -222,3 +222,6 @@
 - [x] Add a compact visual submission-step illustration to the top How it works pop-over without increasing page clutter.
 - [x] Add a clean print-only school result-sheet header with a clearly labeled placeholder area for the official school logo.
 - [x] Verify the guided help and print layout at phone and desktop sizes, then checkpoint the update.
+- [x] Audit and refine fonts, text hierarchy, and student-facing wording from the official header through the footer on every active page.
+- [x] Verify all public and staff routes, and document the current score-management access path and its security scope.
+- [x] Validate the sitewide typographic refinement at phone and desktop sizes, then checkpoint the update.
