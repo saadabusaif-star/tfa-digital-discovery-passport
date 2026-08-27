@@ -6,7 +6,7 @@ All nine supplied resources contribute to the ICT-only Welcome Day experience. T
 
 | Supplied resource | Learning concepts used | Platform integration |
 |---|---|---|
-| **ICT Welcome Back Poster A3** | Welcome-back identity, future innovators, ICT discovery | Welcome Day identity and photo-corner/career-card language |
+| **ICT Welcome Back Poster A3** | “Welcome Back to School,” “Let’s Learn. Create. Innovate. Together!”, AI and innovation, coding and programming, cybersecurity, robotics and automation, game design and creativity, and digital citizenship | Managed visual in the student resource library; Class of 2040, Tech Wheel, and Photo Corner reinforce its future-technology strands |
 | **ICT display poster** | Communication, connections, information sharing, teamwork | ICT Display Quest display concepts and routes |
 | **Computing display banner** | Creative computing, digital exploration, immersive/VR learning | ICT Display Quest visual and VR routes |
 | **Keyboard Shortcuts display posters** | New, open, save, print, copy, paste, cut, undo, redo, select all, text styling, find, zoom, browser navigation | Keyboard Shortcut Sprint and ICT Display Quest routes |

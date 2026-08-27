@@ -4,7 +4,7 @@ The following inventory records the concepts extracted from the nine supplied IC
 
 | Supplied resource | Verified concepts used in the platform | Student-facing integration |
 |---|---|---|
-| **ICT Welcome Back Poster A3** | Welcome-back identity, ICT discovery, future innovators | Welcome Day page identity and photo-corner language |
+| **ICT Welcome Back Poster A3** | “Welcome Back to School,” “Let’s Learn. Create. Innovate. Together!”, AI and innovation, coding and programming, cybersecurity, robotics and automation, game design and creativity, and digital citizenship | Managed visual in the student resource library; its future-technology strands are reinforced in Class of 2040, the Tech Wheel, and the Photo Corner |
 | **Digital Technology or Not? presentation** | Digital technology gets, sends, and saves information; digital versus non-digital classification; sorting objects | Digital Technology or Not activity, presentation-object display, and question routes |
 | **Microsoft Excel Skills Booklet** | Cells, columns, rows, ranges, formulas, functions, charts, chart editing, labels, filters, formatting | Excel Skills Lab, resource library preview, and question routes |
 | **Microsoft Excel Pages pack** | Spreadsheet interface, active cell, formula bar, worksheet, sorting and data organisation | Excel Skills Lab preview and question routes |

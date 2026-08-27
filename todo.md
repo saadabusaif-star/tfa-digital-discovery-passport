@@ -209,3 +209,4 @@
 - [x] Expand every ICT activity and grade-band pool with diverse resource-grounded questions so many complete three-question routes remain fresh before any safe fallback.
 - [x] Strengthen question-bank tests to enforce a substantially larger pool and many distinct valid routes per ICT activity and grade band.
 - [x] Verify visible resource coverage and randomized route behavior, then document and checkpoint the expanded ICT question bank.
+- [x] Add the supplied ICT Welcome Back poster as a managed visual in the student resource library, then verify its responsive presentation.

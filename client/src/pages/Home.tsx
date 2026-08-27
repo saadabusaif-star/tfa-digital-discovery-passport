@@ -39,6 +39,7 @@ const DIGITAL_TECH_OBJECTS = [
 ];
 
 const ICT_RESOURCE_LIBRARY = [
+  { src: "/manus-storage/tfa-ict-welcome-back-poster_ece59402.png", title: "Welcome Back ICT poster", detail: "Learn, create, innovate — together" },
   { src: "/manus-storage/excel-pages-01_842c611e.png", title: "Excel skills pages", detail: "Cells, data, sorting, formulas, charts" },
   { src: "/manus-storage/excel-booklet-01_09e5afaf.png", title: "Excel skills booklet", detail: "Functions, formatting, and analysis" },
   { src: "/manus-storage/ict-i-can-01_352c2878.png", title: "ICT I Can posters", detail: "Logging on, input devices, and digital work" },
