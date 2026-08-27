@@ -228,3 +228,6 @@
 - [x] Add Staff Control Room search, flexible class-section filtering, and student sorting without exposing results outside the signed-in staff scope.
 - [x] Add staff dashboard metrics for total submissions and average quiz score, based on current authorised data.
 - [x] Add regression tests and verify the staff dashboard at phone and desktop sizes, then checkpoint the update.
+- [x] Replace the current typography treatment with a warmer, clearer school-event type system across the student, record, live-board, and staff pages.
+- [x] Rewrite high-visibility student and staff copy with simpler, more natural phrases and stronger action labels.
+- [x] Verify the new visual language at phone, tablet, and desktop sizes, then checkpoint the update.
